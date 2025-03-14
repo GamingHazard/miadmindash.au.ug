@@ -1,129 +1,190 @@
 import React, { useState } from "react";
-import "./styles.css"; // Importing the CSS file
-
+import "./styles.css"; // Ensure the updated styles are linked
+import "w3-css/w3.css";
+import { CircularProgress } from "@mui/material";
+import axios from "axios";
+import { Configs } from "../components/Configs";
 const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true); // State to track login or signup form
+  const [isLogin, setIsLogin] = useState(true);
+  const [names, setNames] = useState("");
+  const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
+  const [createPassword, setCreatePassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [identifier, setIdentifier] = useState("");
+  const [Erro, setErro] = useState(true);
+  const [ErroMsg, setErroMsg] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isVisible, setisVisible] = useState(true);
 
-  // Toggle between login and register forms
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };
 
+  const register = async () => {
+    setLoading(true);
+    try {
+      // Validate inputs
+      if (!names || !email || !contact || !password) {
+        alert("Please fill in all the fields to register.");
+        setLoadingRegister(false); // Stop loading
+        return;
+      }
+
+      const formData = {
+        names: names,
+        email: email,
+        contact: contact,
+        password: password,
+      };
+
+      const response = await axios.post(
+        `${Configs.url}/register-admin`,
+        formData
+      );
+
+      if (response.status === 200) {
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log(error.message);
+      setErro(true);
+      setErroMsg(error.message);
+    }
+    setLoading(false);
+  };
+
+  const login = async () => {
+    // Validate inputs
+    if (!identifier || !password) {
+      alert("Please fill in all the fields to login.");
+      setLoadingRegister(false); // Stop loading
+      return;
+    }
+    try {
+      const formData = { identifier: identifier, password: password };
+      const response = await axios.post(`${Configs.url}/admin-login`, formData);
+
+      if (response.status === 200) {
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log(error.message);
+      setErro(true);
+      setErroMsg(error.message);
+    }
+  };
+
   return (
-    <div>
-      <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Auth Page</title>
+    <div className={`wrapper ${isLogin ? "" : "active"}`}>
+      <span className="bg-animate" />
+      <span className="bg-animate2" />
 
-      {/* Toggle the active class based on state */}
-      <div className={`wrapper ${isLogin ? "" : "active"}`}>
-        <span className="bg-animate" />
-        <span className="bg-animate2" />
-
-        {/* Login Form */}
-        <div className="form-box login">
-          <h2 className="animation" style={{ "--i": 0, "--j": 21 }}>
+      {/* LOGGING IN ADMIN */}
+      <div className="form-box login">
+        <h2 className="animation">Login</h2>
+        <form>
+          <div className="input-box animation">
+            <input
+              onChange={(e) => {
+                setIdentifier(e.target.value);
+              }}
+              type="text"
+              required
+            />
+            <label>Email/Contact</label>
+          </div>
+          <div className="input-box animation">
+            <input
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              type="password"
+              required
+            />
+            <label>Password</label>
+          </div>
+          <button type="submit" className="btn animation">
+            {/* <CircularProgress color="white" size={20} /> */}
             Login
-          </h2>
-          <form action="#">
-            <div
-              className="input-box animation"
-              style={{ "--i": 1, "--j": 22 }}
-            >
-              <input type="text" id="Username_log" required />
-              <label>Username</label>
-            </div>
-            <div
-              className="input-box animation"
-              style={{ "--i": 2, "--j": 23 }}
-            >
-              <input type="password" id="password" required />
-              <label>Password</label>
-            </div>
-            <button
-              type="submit"
-              className="btn animation"
-              style={{ "--i": 3, "--j": 24 }}
-            >
+          </button>
+          <div className="logreg-link animation">
+            <p>
+              Don't have an account?{" "}
+              <a href="#" onClick={toggleForm}>
+                Create One
+              </a>
+            </p>
+            <p>
+              Forgot Password? <a href="#">Recover</a>
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <div className="info-text login">
+        <h2 className="animation">Welcome Back!</h2>
+      </div>
+
+      {/* REGISTERING ADMIN */}
+      <div className="form-box register">
+        {/* <h2 className="animation">Sign Up</h2> */}
+        <form>
+          <div className="input-box animation">
+            <input
+              onChange={(e) => setNames(e.target.value)}
+              type="text"
+              required
+            />
+            <label>Names</label>
+          </div>
+          <div className="input-box animation">
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+            />
+            <label>Email</label>
+          </div>
+          <div className="input-box animation">
+            <input
+              onChange={(e) => setContact(e.target.value)}
+              type="text"
+              required
+            />
+            <label>Contact</label>
+          </div>
+          <div className="input-box animation">
+            <input
+              onChange={(e) => setCreatePassword(e.target.value)}
+              type="password"
+              required
+            />
+            <label>Create Password</label>
+          </div>
+          <div className="input-box animation">
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+            />
+            <label>Confirm Password</label>
+          </div>
+          <button onClick={register} type="submit" className="btn animation">
+            Create Account
+          </button>
+        </form>
+      </div>
+
+      <div className="info-text register">
+        <h2 className="animation">Join Us Now!</h2>
+        <div className="logreg-link animation">
+          <p>
+            Already have an account?{" "}
+            <a href="#" onClick={toggleForm}>
               Login
-            </button>
-            <div
-              className="logreg-link animation"
-              style={{ "--i": 4, "--j": 25 }}
-            >
-              <p>
-                Don't have an account?{" "}
-                <a href="#" className="register-link" onClick={toggleForm}>
-                  Create One
-                </a>
-              </p>
-              <p>
-                Forgot Password? <a href="#" className="register-link" />
-              </p>
-            </div>
-          </form>
-        </div>
-
-        {/* Login Info Text */}
-        <div className="info-text login">
-          <h2 className="animation" style={{ "--i": 0, "--j": 20 }}>
-            Welcome Back!
-          </h2>
-        </div>
-
-        {/* Register Form */}
-        <div className="form-box register">
-          <h2 className="animation" style={{ "--i": 0, "--j": 21 }}>
-            Sign Up
-          </h2>
-          <form action="#">
-            <div
-              className="input-box animation"
-              style={{ "--i": 1, "--j": 22 }}
-            >
-              <input type="text" id="Username_reg" required />
-              <label>Username</label>
-            </div>
-            <div
-              className="input-box animation"
-              style={{ "--i": 2, "--j": 23 }}
-            >
-              <input type="email" id="email" required />
-              <label>Email</label>
-            </div>
-            <div
-              className="input-box animation"
-              style={{ "--i": 3, "--j": 24 }}
-            >
-              <input type="password" id="password" required />
-              <label>Password</label>
-            </div>
-            <button
-              type="submit"
-              className="btn animation"
-              style={{ "--i": 4, "--j": 25 }}
-            >
-              Create Account
-            </button>
-            <div
-              className="logreg-link animation"
-              style={{ "--i": 5, "--j": 26 }}
-            >
-              <p>
-                Already have an account?{" "}
-                <a href="#" className="login-link" onClick={toggleForm}>
-                  Login
-                </a>
-              </p>
-            </div>
-          </form>
-        </div>
-
-        {/* Register Info Text */}
-        <div className="info-text register">
-          <h2 className="animation" style={{ "--i": 0, "--j": 20 }}>
-            Join Us Now!
-          </h2>
+            </a>
+          </p>
         </div>
       </div>
     </div>

@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useContext } from "react";
 
-import Dashboard from "./components/Dashboard";
-import HoneycombGrid from "./pages/Courses";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
-
+import Dashboard from "./components/Dashboard";
+import { AuthContext } from "./context/AuthContext";
 function App() {
+  const { token } = useContext(AuthContext);
   return (
-    <div>
-      {/* <Dashboard /> */}
-      <AuthPage />
-    </div>
+    <Router>
+      {!token ? (
+        <Routes>
+          <Route path="/" element={<AuthPage />} />
+        </Routes>
+      ) : (
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+        </Routes>
+      )}
+    </Router>
   );
 }
 
