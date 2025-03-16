@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     const newToken = DecryptData(savedToken);
 
     if (savedToken) {
-      setAdminToken(newToken);
+      setToken(newToken);
     }
   };
 
@@ -43,6 +43,19 @@ export const AuthProvider = ({ children }) => {
     loggedIn();
   }, []);
 
+  // admin Register function
+  const register = async (token, id, profile) => {
+    if (token) {
+      setToken(token);
+    }
+    setAdminProfile(profile);
+    setAdminID(id);
+    let safeData = EncryptData(JSON.stringify(profile));
+    localStorage.setItem("token", EncryptData(token));
+    localStorage.setItem("profile", safeData);
+    localStorage.setItem("adminID", EncryptData(id));
+  };
+  //  admin login funtion
   const login = async (token, id, profile) => {
     try {
       if (token) {
@@ -58,18 +71,6 @@ export const AuthProvider = ({ children }) => {
       alert(message, "failed to login");
       console.log(error);
     }
-  };
-
-  const register = async (token, id, profile) => {
-    if (token) {
-      setToken(token);
-    }
-    setAdminProfile(profile);
-    setAdminID(id);
-    let safeData = EncryptData(JSON.stringify(profile));
-    localStorage.setItem("token", EncryptData(token));
-    localStorage.setItem("profile", safeData);
-    localStorage.setItem("adminID", EncryptData(id));
   };
 
   const logout = () => {

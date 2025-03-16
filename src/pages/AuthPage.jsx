@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./styles.css"; // Ensure the updated styles are linked
 import "w3-css/w3.css";
 import { CircularProgress } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { Configs } from "../components/Configs";
+import { AuthContext } from "../context/AuthContext";
 const AuthPage = () => {
+  const { register, login } = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
   const [names, setNames] = useState("");
   const [email, setEmail] = useState("");
@@ -14,20 +17,21 @@ const AuthPage = () => {
   const [identifier, setIdentifier] = useState("");
   const [Erro, setErro] = useState(true);
   const [ErroMsg, setErroMsg] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [isVisible, setisVisible] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
   };
 
-  const register = async () => {
+  const registerAdmin = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
       // Validate inputs
       if (!names || !email || !contact || !password) {
         alert("Please fill in all the fields to register.");
-        setLoadingRegister(false); // Stop loading
+        setLoading(false); // Stop loading
         return;
       }
 
@@ -45,6 +49,11 @@ const AuthPage = () => {
 
       if (response.status === 200) {
         console.log(response.data);
+        const token = response.data.token;
+        const id = response.data.id;
+        const profile = response.data.data;
+
+        register(token, id, profile);
       }
     } catch (error) {
       console.log(error.message);
@@ -54,11 +63,13 @@ const AuthPage = () => {
     setLoading(false);
   };
 
-  const login = async () => {
+  const loginAdmin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     // Validate inputs
     if (!identifier || !password) {
       alert("Please fill in all the fields to login.");
-      setLoadingRegister(false); // Stop loading
+      setLoading(false); // Stop loading
       return;
     }
     try {
@@ -67,11 +78,19 @@ const AuthPage = () => {
 
       if (response.status === 200) {
         console.log(response.data);
+        const token = response.data.token;
+        const id = response.data.id;
+        const profile = response.data.user;
+
+        // Call register from AuthContext
+        login(token, id, profile);
       }
     } catch (error) {
       console.log(error.message);
       setErro(true);
       setErroMsg(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,27 +105,73 @@ const AuthPage = () => {
         <form>
           <div className="input-box animation">
             <input
+              autoFocus
               onChange={(e) => {
                 setIdentifier(e.target.value);
               }}
               type="text"
               required
+              style={{ color: "black" }}
             />
             <label>Email/Contact</label>
           </div>
-          <div className="input-box animation">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            className="input-box animation"
+          >
             <input
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
-              type="password"
+              type={isVisible ? "text" : "password"}
               required
+              style={{ color: "black" }}
+            />
+            <Visibility
+              onClick={() => {
+                setIsVisible(false);
+              }}
+              className="w3-ripple"
+              style={{
+                display: !isVisible ? "none" : "block",
+                cursor: "pointer",
+                color: "black",
+                marginLeft: 15,
+              }}
+            />
+            <VisibilityOff
+              style={{
+                display: !isVisible ? "block" : "none",
+                cursor: "pointer",
+                cursor: "pointer",
+                color: "black",
+                marginLeft: 15,
+              }}
+              onClick={() => {
+                setIsVisible(true);
+              }}
             />
             <label>Password</label>
           </div>
-          <button type="submit" className="btn animation">
-            {/* <CircularProgress color="white" size={20} /> */}
-            Login
+          <button type="submit" onClick={loginAdmin} className="btn animation">
+            {loading ? (
+              <span
+                style={{ display: "flex", flex: 1, justifyContent: "center" }}
+              >
+                loging in...{" "}
+                <CircularProgress
+                  style={{ marginLeft: 15 }}
+                  color="white"
+                  size={20}
+                />
+              </span>
+            ) : (
+              "Login"
+            )}
           </button>
           <div className="logreg-link animation">
             <p>
@@ -123,7 +188,9 @@ const AuthPage = () => {
       </div>
 
       <div className="info-text login">
-        <h2 className="animation">Welcome Back!</h2>
+        <h2 style={{ color: "white" }} className="animation">
+          <b>Welcome Back!</b>
+        </h2>
       </div>
 
       {/* REGISTERING ADMIN */}
@@ -154,30 +221,83 @@ const AuthPage = () => {
             />
             <label>Contact</label>
           </div>
-          <div className="input-box animation">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            className="input-box animation"
+          >
             <input
               onChange={(e) => setCreatePassword(e.target.value)}
-              type="password"
+              type={isVisible ? "text" : "password"}
               required
+            />
+            <Visibility
+              onClick={() => {
+                setIsVisible(false);
+              }}
+              className="w3-ripple"
+              style={{
+                display: !isVisible ? "none" : "block",
+                cursor: "pointer",
+                color: "black",
+                marginLeft: 15,
+              }}
+            />
+            <VisibilityOff
+              style={{
+                display: !isVisible ? "block" : "none",
+                cursor: "pointer",
+                cursor: "pointer",
+                color: "black",
+                marginLeft: 15,
+              }}
+              onClick={() => {
+                setIsVisible(true);
+              }}
             />
             <label>Create Password</label>
           </div>
           <div className="input-box animation">
             <input
               onChange={(e) => setPassword(e.target.value)}
-              type="password"
+              type={isVisible ? "text" : "password"}
               required
+              disabled={!createPassword}
             />
+
             <label>Confirm Password</label>
           </div>
-          <button onClick={register} type="submit" className="btn animation">
-            Create Account
+
+          {/* Button */}
+          <button
+            onClick={registerAdmin}
+            type="submit"
+            className="btn animation"
+            disabled={!names || !email || !contact || !password}
+          >
+            {loading ? (
+              <span style={{ display: "flex", justifyContent: "center" }}>
+                creating account...
+                <CircularProgress
+                  style={{ marginLeft: 15 }}
+                  color="white"
+                  size={20}
+                />
+              </span>
+            ) : (
+              "Create Account"
+            )}
           </button>
         </form>
       </div>
 
       <div className="info-text register">
-        <h2 className="animation">Join Us Now!</h2>
+        <h2 className="animation">
+          <b>Join Us Now!</b>
+        </h2>
         <div className="logreg-link animation">
           <p>
             Already have an account?{" "}

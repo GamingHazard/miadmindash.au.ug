@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Courses from "../pages/Courses";
 import pic from "../assets/profile.jpg";
 import "w3-css/w3.css";
-
+import { AuthContext } from "../context/AuthContext";
 import {
   LibraryBooks,
   People,
@@ -19,6 +19,7 @@ import ReportsPage from "../pages/Reports";
 import AnalyticsPage from "../pages/Analytics";
 import CourseForm from "./CourseForm";
 function Dashboard() {
+  const { logout } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState(1);
   const [courseForm, setCourseForm] = useState(false);
   const [agricCourseDetails, setAgricCourseDetails] = useState(false);
@@ -212,6 +213,7 @@ function Dashboard() {
           </span>
         </span>
         <span
+          onClick={logout}
           style={{
             display: "flex",
             justifyContent: "center",
