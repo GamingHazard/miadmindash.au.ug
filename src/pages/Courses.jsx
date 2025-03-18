@@ -9,7 +9,7 @@ import img6 from "../assets/img/work06.jpg";
 import img7 from "../assets/img/work07.jpg";
 import "w3-css/w3.css";
 
-import "./css.css"; // Using existing CSS
+import "./honeycomb.css"; // Using existing CSS
 import Agriculture from "./courseDetailPages.jsx/Agriculture";
 import Tech from "./courseDetailPages.jsx/Technology";
 import Business from "./courseDetailPages.jsx/Business";
