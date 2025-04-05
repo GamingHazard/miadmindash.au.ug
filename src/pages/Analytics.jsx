@@ -7,6 +7,7 @@ function AnalyticsPage() {
         textAlign: "center",
         justifyContent: "space-evenly",
         alignItems: "center",
+        width: 1200,
       }}
     >
       <div
@@ -19,6 +20,7 @@ function AnalyticsPage() {
           margin: 10,
           borderRadius: 20,
           height: 300,
+          backgroundColor: "white",
         }}
       >
         <div

@@ -74,8 +74,11 @@ function ReportsPage() {
               maxHeight: "80%",
               width: "100%",
               maxWidth: "100%",
+              minWidth: "100%",
+              minHeight: "80%",
               border: "none",
               borderTopRightRadius: 20,
+              padding: 10,
             }}
           ></textarea>
           <div
@@ -84,10 +87,16 @@ function ReportsPage() {
               justifyContent: "space-evenly",
               alignItems: "center",
               marginTop: 4,
+              position: "absolutes",
             }}
           >
-            <button>Delete</button>
-            <button>Send</button>
+            <button
+              // className="w3-hover-maroon"
+              style={{ paddingLeft: 10, paddingRight: 10 }}
+            >
+              Delete
+            </button>
+            <button style={{ paddingLeft: 10, paddingRight: 10 }}>Send</button>
           </div>
         </div>
       </div>

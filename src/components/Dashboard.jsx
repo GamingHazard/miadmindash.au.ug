@@ -22,14 +22,7 @@ function Dashboard() {
   const { logout } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState(1);
   const [courseForm, setCourseForm] = useState(false);
-  const [agricCourseDetails, setAgricCourseDetails] = useState(false);
-  const [techCourseDetails, setTechCourseDetails] = useState(false);
-  const [businessCourseDetails, setBusinessCourseDetails] = useState(false);
-  const [engineeringCourseDetails, setEngineeringCourseDetails] =
-    useState(false);
-  const [medicalCourseDetails, setMedicalCourseDetails] = useState(false);
-  const [fnDCourseDetails, setFnDCourseDetails] = useState(false);
-  const [fnCCourseDetails, setFnCCourseDetails] = useState(false);
+
   const handleTabClick = (tabIndex) => {
     setActiveTab(tabIndex);
   };
@@ -41,54 +34,23 @@ function Dashboard() {
     setCourseForm(false);
   };
 
-  const showAgric = async () => {
-    setAgricCourseDetails(true);
-  };
-  const hideAgric = async () => {
-    setAgricCourseDetails(false);
-  };
-  const showTech = async () => {
-    setTechCourseDetails(true);
-  };
-  const hideTech = async () => {
-    setTechCourseDetails(false);
-  };
-  const showEngi = async () => {
-    setEngineeringCourseDetails(true);
-  };
-  const hideEngi = async () => {
-    setEngineeringCourseDetails(false);
-  };
-  const showBusi = async () => {
-    setBusinessCourseDetails(true);
-  };
-  const hideBusi = async () => {
-    setBusinessCourseDetails(false);
-  };
-  const showMeds = async () => {
-    setMedicalCourseDetails(true);
-  };
-  const hideMeds = async () => {
-    setMedicalCourseDetails(false);
-  };
-  const showFnD = async () => {
-    setFnDCourseDetails(true);
-  };
-  const hideFnD = async () => {
-    setFnDCourseDetails(false);
-  };
-  const showFnC = async () => {
-    setFnCCourseDetails(true);
-  };
-  const hideFnC = async () => {
-    setFnCCourseDetails(false);
-  };
   return (
-    <div style={{}}>
+    <div
+      style={{
+        backgroundColor: "whitesmoke",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+        overflow: "auto",
+        overflowY: "hidden",
+      }}
+    >
+      {/* SIDEBAR */}
       <div
         class=" w3-bar-block w3-margin w3-card w3-third w3-hide-small "
         style={{
-          width: "20%",
+          width: 250,
           backgroundColor: "whitesmoke",
           borderRadius: 20,
           paddingBottom: 10,
@@ -107,7 +69,7 @@ function Dashboard() {
           <img
             src={pic}
             className="w3-circle w3-card"
-            style={{ width: 70, height: 70 }}
+            style={{ width: 50, height: 50, marginRight: 10 }}
             alt=""
           />
           <div
@@ -118,7 +80,7 @@ function Dashboard() {
               display: "flex",
             }}
           >
-            <h2>Hi, Admin</h2>
+            <h4>Hi, Admin</h4>
           </div>
         </div>
         <span
@@ -218,7 +180,7 @@ function Dashboard() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: 340,
+            marginTop: 360,
             borderBottomRightRadius: 20,
             borderBottomLeftRadius: 20,
           }}
@@ -237,9 +199,8 @@ function Dashboard() {
           display: "flex",
           height: 700,
           padding: 10,
-          overflow: "auto",
-          overflowX: "hidden",
           position: "relative",
+          width: 1200,
         }}
       >
         {activeTab === 1 && (
@@ -265,6 +226,9 @@ function Dashboard() {
             right: 50,
             display: activeTab === 1 ? "flex block" : "none",
             cursor: "pointer",
+            paddingLeft: 10,
+            paddingRight: 10,
+            zIndex: 2,
           }}
         >
           Create Course{" "}

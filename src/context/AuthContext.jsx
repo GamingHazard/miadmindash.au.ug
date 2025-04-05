@@ -89,6 +89,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         EncryptData,
         DecryptData,
+        adminID,
       }}
     >
       {children}

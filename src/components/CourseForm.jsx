@@ -1,16 +1,27 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useContext } from "react";
 import { useDropzone } from "react-dropzone";
 import "w3-css/w3.css";
 import pic from "../assets/no-image.jpg";
-import { AddAPhotoRounded, ArrowBack } from "@mui/icons-material";
-
+import { AddAPhotoRounded, ArrowBack, Description } from "@mui/icons-material";
+import { Configs } from "./Configs";
+import { AuthContext } from "../context/AuthContext";
+import { CircularProgress } from "@mui/material";
+import axios from "axios";
 function CourseForm({ closeForm }) {
+  const { DecryptData } = useContext(AuthContext);
+
   const [videos, setVideos] = useState([]);
   const [videoThumbnails, setVideoThumbnails] = useState([]);
   const [error, setError] = useState("");
   const [image, setImage] = useState(null);
   const [errorMsg, setErrorMsg] = useState(false);
   const fileInputRef = useRef(null);
+  const [courseName, setCourseName] = useState("");
+  const [sector, setSector] = useState("");
+  const [description, setDescription] = useState("");
+  const [duration, setDuration] = useState("");
+  const [loading, setLoading] = useState(false);
+  const savedId = localStorage.getItem("adminID");
 
   // Handle image selection
   const handleImageChange = (event) => {
@@ -33,7 +44,7 @@ function CourseForm({ closeForm }) {
   // Dropzone settings for video uploads
   const onDrop = useCallback(
     (acceptedFiles) => {
-      const maxSize = 30 * 1024 * 1024; // 30MB limit
+      const maxSize = 300 * 1024 * 1024; // 30MB limit
       const validVideos = [];
       const thumbnails = [];
 
@@ -58,26 +69,205 @@ function CourseForm({ closeForm }) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: "video/*",
     multiple: true,
-    maxSize: 30 * 1024 * 1024, // 30MB limit
+    maxSize: 300 * 1024 * 1024, // 30MB limit
     onDrop,
   });
+  // upload the course cover image to cloudinary
+  const uploadToCloudinary = async () => {
+    if (!image?.file) return null;
+
+    // fetch signature
+    let signatureData;
+    try {
+      const { data } = await axios.get(
+        `${Configs.url}/cloudinary-signature/${Configs.presets.coverImages}`
+      );
+      signatureData = data;
+    } catch (err) {
+      console.error("Error fetching image signature:", err);
+      throw new Error("Could not get upload signature for cover image.");
+    }
+
+    const { signature, timestamp } = signatureData;
+    const formData = new FormData();
+    formData.append("file", image.file);
+    formData.append("upload_preset", Configs.presets.coverImages);
+    formData.append("timestamp", timestamp);
+    formData.append("signature", signature);
+    formData.append("api_key", Configs.api_key);
+
+    try {
+      const resp = await axios.post(
+        `https://api.cloudinary.com/v1_1/${Configs.cloudName}/image/upload`,
+        formData
+      );
+      return {
+        url: resp.data.secure_url,
+        public_Id: resp.data.public_id,
+      };
+    } catch (err) {
+      console.error("Error uploading cover image:", err);
+      throw new Error("Cover image upload failed.");
+    }
+  };
+  // utility to upload videos to Cloudinary
+  const uploadVideosToCloudinary = async (videos) => {
+    if (videos.length === 0) {
+      throw new Error("No videos selected.");
+    }
+
+    // map each video to a promise
+    const uploadPromises = videos.map(async (video, idx) => {
+      // get signature for this video
+      const { data } = await axios.get(
+        `${Configs.url}/cloudinary-signature/${Configs.presets.videos}`
+      );
+      const { signature, timestamp } = data;
+
+      const formData = new FormData();
+      formData.append("file", video);
+      formData.append("upload_preset", Configs.presets.videos);
+      formData.append("timestamp", timestamp);
+      formData.append("signature", signature);
+      formData.append("api_key", Configs.api_key);
+
+      const uploadResp = await axios.post(
+        `https://api.cloudinary.com/v1_1/${Configs.cloudName}/video/upload`,
+        formData
+      );
+
+      return {
+        url: uploadResp.data.secure_url,
+        public_Id: uploadResp.data.public_id,
+      };
+    });
+
+    // wait for all or throw on first failure
+    return Promise.all(uploadPromises);
+  };
+
+  const saveCourse = async () => {
+    setLoading(true);
+    setError(""); // clear any old errors
+
+    try {
+      if (!image) throw new Error("Please select a cover image.");
+      if (videos.length === 0)
+        throw new Error("Please select at least one video.");
+
+      // 1) upload cover image
+      const imageUrl = await uploadToCloudinary();
+
+      // 2) upload all videos
+      const uploadedVideos = await uploadVideosToCloudinary(videos);
+
+      // 3) build payload
+      const adminID = DecryptData(savedId);
+      const formData = {
+        courseName: courseName,
+        sector: sector,
+        duration: duration,
+        description: description.trim(),
+        coverImage: imageUrl,
+        videos: uploadedVideos,
+        adminId: adminID,
+      };
+      console.log(formData);
+
+      // 4) send to your backend
+      const res = await axios.post(`${Configs.url}/create-course`, formData);
+
+      if (res.status === 201) {
+        alert("Course created successfully!");
+        // reset form
+        setCourseName(" ");
+        setSector(" ");
+        setDuration(" ");
+        setDescription(" ");
+        setImage(null);
+        setVideos([]);
+        setVideoThumbnails([]);
+      } else {
+        throw new Error("Backend returned status " + res.status);
+      }
+    } catch (err) {
+      console.error("saveCourse error:", err);
+      setError(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div>
-      <button onClick={closeForm} style={{ display: "flex" }}>
-        <ArrowBack
-          className="w3-ripple"
+    <div style={{ width: 1200 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "left",
+        }}
+        className="w3-panel"
+      >
+        <button
+          onClick={closeForm}
           style={{
-            color: "grey",
-            cursor: "pointer",
-            fontSize: 30,
+            display: "flex",
+            paddingRight: 10,
+            paddingLeft: 10,
+            justifyContent: "center",
+            alignItems: "center",
           }}
-        />
-        Back
-      </button>
+          className="w3-left"
+        >
+          <ArrowBack
+            className="w3-ripple"
+            style={{
+              color: "grey",
+              cursor: "pointer",
+              fontSize: 20,
+            }}
+          />
+          <b style={{ flex: 1 }}>Back</b>
+        </button>
+        <div style={{ flex: 1 }} />
+
+        <button
+          className="w3-right"
+          onClick={saveCourse}
+          style={{ cursor: "pointer", paddingLeft: 10, paddingRight: 10 }}
+        >
+          {loading ? (
+            <span
+              style={{
+                display: "flex",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              Saving
+              <CircularProgress
+                style={{ marginLeft: 5 }}
+                color="white"
+                size={15}
+              />
+            </span>
+          ) : (
+            "Save"
+          )}
+        </button>
+      </div>
 
       <div style={{ display: "flex", marginTop: 50 }}>
-        <div style={{ width: 300, height: 300, position: "relative" }}>
+        <div
+          style={{
+            width: 300,
+            height: 300,
+            position: "relative",
+            backgroundColor: "white",
+          }}
+        >
           {image && (
             <img
               src={image.preview}
@@ -115,26 +305,52 @@ function CourseForm({ closeForm }) {
         <div style={{ padding: 10, flex: 1 }}>
           <label>Course Name</label>
           <br />
-          <input style={{ width: 400 }} type="text" />
+          <input
+            onChange={(e) => {
+              setCourseName(e.target.value);
+            }}
+            style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
+            type="text"
+          />
+
           <br />
           <label>Sector</label>
           <br />
-          <input style={{ width: 400 }} type="text" />
+          <input
+            onChange={(e) => {
+              setSector(e.target.value);
+            }}
+            style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
+            type="text"
+          />
           <br />
           <label>Duration</label>
           <br />
-          <input style={{ width: 400 }} type="text" />
+          <input
+            onChange={(e) => {
+              setDuration(e.target.value);
+            }}
+            style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
+            type="text"
+          />
         </div>
 
         <div className="w3-right">
           <label>Description</label>
           <br />
           <textarea
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+            placeholder="enter text..."
             style={{
               height: 260,
               marginRight: 10,
               padding: 10,
               maxHeight: 260,
+              minWidth: 400,
+              maxWidth: 400,
+              minHeight: 260,
             }}
             name=""
             id=""
@@ -155,7 +371,7 @@ function CourseForm({ closeForm }) {
       >
         <input {...getInputProps()} />
         <p>Drag & drop videos here, or click to select</p>
-        <p style={{ fontSize: 12, color: "grey" }}>Max file size: 30MB</p>
+        <p style={{ fontSize: 12, color: "grey" }}>Max file size: 300MB</p>
       </div>
 
       {/* Show error message if any */}
@@ -170,8 +386,9 @@ function CourseForm({ closeForm }) {
           overflowX: "auto",
           backgroundColor: "whitesmoke",
           borderRadius: 20,
-          height: 200,
+          height: 220,
           marginTop: 10,
+          width: "100%",
         }}
       >
         {videoThumbnails.length > 0 ? (
@@ -179,23 +396,22 @@ function CourseForm({ closeForm }) {
             <video
               key={index}
               src={thumbnail}
-              width="100"
-              height="100"
-              controls
+              width="200"
+              height="200"
               style={{
                 objectFit: "cover",
                 borderRadius: 10,
+                marginLeft: 10,
+                marginRight: 10,
               }}
+              controls
+              controlsList="seek"
             />
           ))
         ) : (
           <p>No videos selected</p>
         )}
       </div>
-
-      <button style={{ width: "100%", marginTop: 20, cursor: "pointer" }}>
-        Save
-      </button>
     </div>
   );
 }

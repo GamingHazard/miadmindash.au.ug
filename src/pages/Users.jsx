@@ -8,6 +8,7 @@ function Users() {
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-evenly",
+        width: 1200,
       }}
     >
       <div

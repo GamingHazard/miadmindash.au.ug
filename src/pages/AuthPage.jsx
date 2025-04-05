@@ -17,9 +17,8 @@ const AuthPage = () => {
   const [identifier, setIdentifier] = useState("");
   const [resetCode, setResetCode] = useState("");
   const [resetToken, setResetToken] = useState("");
-  const [Erro, setErro] = useState(false);
+
   const [successMsg, setSuccessMsg] = useState(false);
-  const [ErroMsg, setErroMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -32,6 +31,8 @@ const AuthPage = () => {
   const [contactErr, setContactErr] = useState(false);
   const [easswordErr, setPasswordErr] = useState(false);
   const [identifierErr, setIdentifierErr] = useState(false);
+  const [Erro, setErro] = useState(false);
+  const [ErroMsg, setErroMsg] = useState("");
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
@@ -475,12 +476,6 @@ const AuthPage = () => {
               </button>
               <div className="logreg-link animation">
                 <p>
-                  Don't have an account?{" "}
-                  <a href="#" onClick={toggleForm}>
-                    Create One
-                  </a>
-                </p>
-                <p>
                   Forgot Password?{" "}
                   <a
                     onClick={() => {
@@ -498,6 +493,15 @@ const AuthPage = () => {
           <div className="info-text login">
             <h2 style={{ color: "white" }} className="animation">
               <b>Welcome Back!</b>
+              <br />
+              <div className="logreg-link animation">
+                <p style={{ color: "white" }}>
+                  Don't have an account? <br />
+                  <a style={{ color: "#0d052a" }} href="#" onClick={toggleForm}>
+                    Create One
+                  </a>
+                </p>
+              </div>
             </h2>
           </div>
 
@@ -524,6 +528,7 @@ const AuthPage = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   type="email"
                   required
+                  disabled={!names}
                 />
                 <br />
                 <span style={{ color: "crimson" }}>
@@ -537,6 +542,7 @@ const AuthPage = () => {
                   onChange={(e) => setContact(e.target.value)}
                   type="text"
                   required
+                  disabled={!email}
                 />
                 <br />
                 <span style={{ color: "crimson" }}>
@@ -557,6 +563,7 @@ const AuthPage = () => {
                   onChange={(e) => setCreatePassword(e.target.value)}
                   type={isVisible ? "text" : "password"}
                   required
+                  disabled={!contact}
                 />
                 <Visibility
                   onClick={() => {
@@ -603,6 +610,17 @@ const AuthPage = () => {
 
                 <label>Confirm Password</label>
               </div>
+
+              <span
+                style={{
+                  color: "crimson",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {Erro && !isLogin ? ErroMsg : ""}
+              </span>
 
               {/* Button */}
               <button

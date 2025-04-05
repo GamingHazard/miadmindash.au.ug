@@ -30,8 +30,10 @@ function Courses({}) {
     <div
       // className="honeycomb"
       style={{
-        display: "flex block",
-        justifyContent: "space-evenly",
+        height: 700,
+        overflow: "auto",
+        overflowX: "hidden",
+        paddingTop: 20,
       }}
     >
       {activeTab === 0 ? (
@@ -41,7 +43,7 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img5} alt="Work 3" />
+            <img className="honeycomb-cell_img" src={img1} alt="Work 3" />
             <div class="honeycomb-cell_title">Agriculture</div>
           </div>
           <div
@@ -49,7 +51,7 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img5} alt="Work 3" />
+            <img className="honeycomb-cell_img" src={img2} alt="Work 3" />
             <div class="honeycomb-cell_title">Technology</div>
           </div>
           <div
@@ -57,7 +59,7 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img5} alt="Work 3" />
+            <img className="honeycomb-cell_img" src={img3} alt="Work 3" />
             <div class="honeycomb-cell_title">Business</div>
           </div>
           <div
@@ -65,7 +67,7 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img5} alt="Work 3" />
+            <img className="honeycomb-cell_img" src={img4} alt="Work 3" />
             <div class="honeycomb-cell_title">Engineering</div>
           </div>
           <div
@@ -81,7 +83,7 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img5} alt="Work 3" />
+            <img className="honeycomb-cell_img" src={img6} alt="Work 3" />
             <div class="honeycomb-cell_title">Fashion & Designig</div>
           </div>
           <div
@@ -89,8 +91,26 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img5} alt="Work 3" />
-            <div class="honeycomb-cell_title">Food & Chefery</div>
+            <img className="honeycomb-cell_img" src={img7} alt="Work 3" />
+            <div class="honeycomb-cell_title">
+              HOTEL <br /> management
+            </div>
+          </div>
+          <div
+            onClick={() => handleTabClick(7)}
+            className="honeycomb-cell w3-card w3-ripple"
+            style={{ cursor: "pointer" }}
+          >
+            <img className="honeycomb-cell_img" src={img1} alt="Work 3" />
+            <div class="honeycomb-cell_title">DIY Projects</div>
+          </div>
+          <div
+            onClick={() => handleTabClick(7)}
+            className="honeycomb-cell w3-card w3-ripple"
+            style={{ cursor: "pointer" }}
+          >
+            <img className="honeycomb-cell_img" src={img4} alt="Work 3" />
+            <div class="honeycomb-cell_title">Technical Skills</div>
           </div>
         </div>
       ) : (
@@ -99,9 +119,10 @@ function Courses({}) {
             display: "flex",
             height: 700,
             padding: 10,
-            overflow: "auto",
-            overflowX: "hidden",
             position: "relative",
+            backgroundColor: "whitesmoke",
+            width: 1200,
+            minWidth: 800,
           }}
         >
           {activeTab === 1 && <Agriculture back={Back} />}
