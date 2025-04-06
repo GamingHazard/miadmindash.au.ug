@@ -9,11 +9,12 @@ import { useDropzone } from "react-dropzone";
 import "w3-css/w3.css";
 import pic from "../assets/no-image.jpg";
 import { AddAPhotoRounded, ArrowBack } from "@mui/icons-material";
-import { Configs } from "./Configs";
+import { Configs, Options } from "./Configs";
 import { AuthContext } from "../context/AuthContext";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 function EditCourse() {
   const { DecryptData } = useContext(AuthContext);
@@ -22,9 +23,14 @@ function EditCourse() {
 
   // === Form fields ===
   const [courseName, setCourseName] = useState(course.courseName);
-  const [sector, setSector] = useState(course.sector);
+
   const [duration, setDuration] = useState(course.duration);
   const [description, setDescription] = useState(course.description);
+
+  const initialSectorOption = Options.find(
+    (opt) => opt.value === course.sector
+  );
+  const [sector, setSector] = useState(initialSectorOption);
 
   // === Cover image ===
   const [image, setImage] = useState(null);
@@ -150,7 +156,7 @@ function EditCourse() {
       const adminId = DecryptData(localStorage.getItem("adminID"));
       const payload = {
         courseName: courseName,
-        sector: sector,
+        sector: sector.value,
         duration: duration,
         description: description.trim(),
         coverImage: cover,
@@ -161,7 +167,6 @@ function EditCourse() {
       // 5) send PATCH
       await axios.patch(`${Configs.url}/update-course/${course._id}`, payload);
 
-      alert("Course updated successfully!");
       navigate(-1);
     } catch (err) {
       console.error(err);
@@ -265,12 +270,15 @@ function EditCourse() {
           />
 
           <label>Sector</label>
-          <input
-            value={sector}
-            onChange={(e) => setSector(e.target.value)}
-            className="w3-input"
-          />
-
+          <div style={{ width: 400 }}>
+            <Select
+              value={sector}
+              onChange={setSector}
+              options={Options}
+              placeholder="Select Course Sector..."
+              isClearable
+            />
+          </div>
           <label>Duration</label>
           <input
             value={duration}

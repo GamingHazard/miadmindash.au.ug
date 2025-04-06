@@ -13,10 +13,12 @@ import "./honeycomb.css"; // Using existing CSS
 import Agriculture from "./courseDetailPages.jsx/Agriculture";
 import Tech from "./courseDetailPages.jsx/Technology";
 import Business from "./courseDetailPages.jsx/Business";
-import Engineiering from "./courseDetailPages.jsx/Engineering";
-import Medical from "./courseDetailPages.jsx/Medical";
+import Engineering from "./courseDetailPages.jsx/Engineering";
+import Health from "./courseDetailPages.jsx/Health";
 import FnD from "./courseDetailPages.jsx/FashionNdesign";
-import FnC from "./courseDetailPages.jsx/FoodNchefering";
+import HotelMngt from "./courseDetailPages.jsx/HotelMngt";
+import DIY from "./courseDetailPages.jsx/DIYprojects";
+import Skills from "./courseDetailPages.jsx/TechnicalSkills";
 
 function Courses({}) {
   const [activeTab, setActiveTab] = useState(0);
@@ -97,7 +99,7 @@ function Courses({}) {
             </div>
           </div>
           <div
-            onClick={() => handleTabClick(7)}
+            onClick={() => handleTabClick(8)}
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
@@ -105,7 +107,7 @@ function Courses({}) {
             <div class="honeycomb-cell_title">DIY Projects</div>
           </div>
           <div
-            onClick={() => handleTabClick(7)}
+            onClick={() => handleTabClick(9)}
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
@@ -128,10 +130,12 @@ function Courses({}) {
           {activeTab === 1 && <Agriculture back={Back} />}
           {activeTab === 2 && <Tech back={Back} />}
           {activeTab === 3 && <Business back={Back} />}
-          {activeTab === 4 && <Engineiering back={Back} />}
-          {activeTab === 5 && <Medical back={Back} />}
+          {activeTab === 4 && <Engineering back={Back} />}
+          {activeTab === 5 && <Health back={Back} />}
           {activeTab === 6 && <FnD back={Back} />}
-          {activeTab === 7 && <FnC back={Back} />}
+          {activeTab === 7 && <HotelMngt back={Back} />}
+          {activeTab === 8 && <DIY back={Back} />}
+          {activeTab === 9 && <Skills back={Back} />}
         </div>
       )}
     </div>

@@ -7,6 +7,11 @@ import { AuthContext } from "../context/AuthContext";
 import { CircularProgress } from "@mui/material";
 
 function SettingsPage() {
+  const { logout, EncryptData, DecryptData } = useContext(AuthContext);
+  const userId = localStorage.getItem("adminID");
+  const profile =
+    JSON.parse(DecryptData(localStorage.getItem("profile"))) || "";
+
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
@@ -14,12 +19,12 @@ function SettingsPage() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [password, setPassword] = useState("");
-  const [recoveryEmail, setRecoveryEmail] = useState("");
+  const [deletePassword, setDeletePassword] = useState("");
+  const [recoveryEmail, setRecoveryEmail] = useState(profile.recoveryEmail);
   const [verificationCode, setVerificationCode] = useState("");
   const [names, setNames] = useState("");
-  const [contact, setContact] = useState("");
-  const [email, setEmail] = useState("");
-  const { adminID, logout, EncryptData, DecryptData } = useContext(AuthContext);
+  const [contact, setContact] = useState(profile.contact);
+  const [email, setEmail] = useState(profile.email);
 
   const updatePassword = async () => {
     setLoading(true);
@@ -27,6 +32,7 @@ function SettingsPage() {
     const newPassword = password;
 
     try {
+      const adminID = DecryptData(localStorage.getItem("adminID"));
       const response = await axios.patch(
         `${Configs.url}/change-password/${adminID}`,
         {
@@ -44,6 +50,7 @@ function SettingsPage() {
     } catch (error) {
       setErrorMsg(true);
       setErrorTxt(`Failed to update password.${error.message}`);
+      console.log(error.message);
     } finally {
       setLoading(false);
     }
@@ -51,16 +58,19 @@ function SettingsPage() {
 
   const updateProfile = async () => {
     try {
+      const adminID = DecryptData(localStorage.getItem("adminID"));
       const data = {
         names: names,
         email: email,
         contact: contact,
         recoveryEmail: recoveryEmail,
+        id: adminID,
       };
+      console.log(data);
+
       const response = await axios.patch(`${Configs.url}/update-admin`, data);
       if (response.status === 200) {
         const profile = response.data.admin;
-        console.log(profile);
 
         let safeData = EncryptData(JSON.stringify(profile));
         localStorage.setItem("profile", safeData);
@@ -80,26 +90,21 @@ function SettingsPage() {
       setLoading2(false);
       return;
     }
-    const data = { email: recoveryEmail?.trim(), id: adminID };
+
     try {
-      const response = await axios.post(
-        `${Configs.url}/verification-code`,
-        data
-      );
+      const adminID = DecryptData(localStorage.getItem("adminID"));
+      const data = {
+        email: recoveryEmail?.trim(),
+        id: adminID,
+      };
+
+      const response = await axios.post(`${Configs.url}/recovery-email`, data);
       if (response.status === 200) {
-        setSuccessMsg(true);
-        setVerifyFeild(true);
+        // setSuccessMsg(true);
+        // setVerifyFeild(true);
+        console.log("success");
       }
     } catch (error) {
-      setErro(true);
-      if (error.message === "Request failed with status code 404") {
-        setErroMsg("sorry!, email address not found");
-      } else {
-        setErroMsg(
-          "Failed to send the code, please check the email and try again "
-        );
-      }
-
       console.log(error.message);
     } finally {
       setLoading2(false);
@@ -109,29 +114,43 @@ function SettingsPage() {
   // function for verifying the code
   const verifyCode = async (e) => {
     setLoading3(true);
-    const data = {
-      email: recoveryEmail?.trim(),
-      code: verificationCode?.trim(),
-    };
-    console.log(data);
+    const adminID = DecryptData(localStorage.getItem("adminID"));
 
     try {
-      const response = await axios.post(`${Configs.url}/verify-email`, data);
+      const data = {
+        email: recoveryEmail?.trim(),
+        code: verificationCode?.trim(),
+        id: adminID,
+      };
+      const res = await axios.patch(
+        `${Configs.url}/verify-recover-email`,
+        data
+      );
+      if (res.status === 200) {
+        setVerificationCode("");
+        setRecoveryEmail("");
+      }
 
       // Redirect to reset password page
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(error.message);
     } finally {
       setLoading3(false);
     }
   };
 
   const deleteAccount = async () => {
-    setLoading4(false);
-    try {
-      const data = { id: adminID, password: password };
+    const adminID = DecryptData(localStorage.getItem("adminID"));
 
-      const response = await axios.delete(`${Configs.url}/delete-admin`, data);
+    setLoading4(true);
+    try {
+      const data = { id: adminID, password: deletePassword };
+      console.log(data);
+
+      const response = await axios.delete(
+        `${Configs.url}/delete-account`,
+        data
+      );
       if (response.status === 200) {
         logout();
       }
@@ -174,6 +193,7 @@ function SettingsPage() {
             <br />
             <br />
             <input
+              disabled={profile.recoveryEmail}
               onChange={(e) => {
                 setRecoveryEmail(e.target.value);
               }}
@@ -181,10 +201,11 @@ function SettingsPage() {
               type="email"
               placeholder="enter email"
             />
+            <br />
             <button
-              disabled={!recoveryEmail}
+              disabled={!recoveryEmail || profile.recoveryEmail}
               onClick={getCode}
-              style={{ paddingLeft: 10, paddingRight: 10, marginTop: 30 }}
+              style={{ paddingLeft: 10, paddingRight: 10 }}
             >
               {loading2 ? (
                 <span
@@ -207,13 +228,16 @@ function SettingsPage() {
               )}
             </button>
             <br />
-            {!recoveryEmail
-              ? ""
-              : "A 6 digit code will be sent to the email address above."}
-            <br />
+            {!recoveryEmail || profile.recoveryEmail ? (
+              ""
+            ) : (
+              <p style={{ fontSize: 10 }}>
+                A 6 digit code will be sent to the email address above.
+              </p>
+            )}
             <br />
             <input
-              disabled={!recoveryEmail}
+              disabled={!recoveryEmail || profile.recoveryEmail}
               onChange={(e) => {
                 setVerificationCode(e.target.value);
               }}
@@ -222,7 +246,7 @@ function SettingsPage() {
               placeholder="enter the 6 digit code"
             />
             <button
-              disabled={!recoveryEmail}
+              disabled={!recoveryEmail || profile.recoveryEmail}
               onClick={verifyCode}
               style={{ paddingLeft: 10, paddingRight: 10 }}
             >
@@ -272,6 +296,7 @@ function SettingsPage() {
               placeholder="enter old password"
             />
             <br />
+
             <br />
             <input
               onChange={(e) => {
@@ -354,6 +379,9 @@ function SettingsPage() {
             <br />
             <br />
             <input
+              onChange={(e) => {
+                setDeletePassword(e.target.value);
+              }}
               style={{ paddingLeft: 10, paddingRight: 10 }}
               type="password"
               placeholder="enter password to continue"
@@ -361,6 +389,7 @@ function SettingsPage() {
             <br />
             <br />
             <button
+              className="w3-ripple"
               onClick={deleteAccount}
               style={{
                 paddingLeft: 10,
@@ -369,8 +398,8 @@ function SettingsPage() {
                 color: "white",
                 borderRadius: 6,
                 border: "none",
+                cursor: "pointer",
               }}
-              disabled={true}
             >
               {loading4 ? (
                 <span
@@ -404,11 +433,11 @@ function SettingsPage() {
           <label>names</label>
           <br />
           <input
+            defaultValue={profile.names}
             onChange={(e) => {
               setNames(e.target.value);
             }}
             style={{ paddingLeft: 10, paddingRight: 10 }}
-            disabled={true}
             type="email"
           />{" "}
           <br />
@@ -416,11 +445,11 @@ function SettingsPage() {
           <label>Contact</label>
           <br />
           <input
+            defaultValue={profile.contact}
             onChange={(e) => {
               setContact(e.target.value);
             }}
             style={{ paddingLeft: 10, paddingRight: 10 }}
-            disabled={true}
             type="email"
           />{" "}
           <br />
@@ -428,11 +457,11 @@ function SettingsPage() {
           <label>email</label>
           <br />
           <input
+            defaultValue={profile.email}
             onChange={(e) => {
               setEmail(e.target.value);
             }}
             style={{ paddingLeft: 10, paddingRight: 10 }}
-            disabled={true}
             type="email"
           />{" "}
           <br />
@@ -440,11 +469,11 @@ function SettingsPage() {
           <label>Recovery Email</label>
           <br />
           <input
+            defaultValue={profile.recoveryEmail}
             onChange={(e) => {
               setRecoveryEmail(e.target.value);
             }}
             style={{ paddingLeft: 10, paddingRight: 10 }}
-            disabled={true}
             type="email"
           />{" "}
           <br />
@@ -453,7 +482,25 @@ function SettingsPage() {
             onClick={updateProfile}
             style={{ paddingLeft: 10, paddingRight: 10 }}
           >
-            Update
+            {loading ? (
+              <span
+                style={{
+                  display: "flex",
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                updating
+                <CircularProgress
+                  style={{ marginLeft: 5 }}
+                  color="white"
+                  size={15}
+                />
+              </span>
+            ) : (
+              "Update"
+            )}
           </button>
         </div>
       </div>

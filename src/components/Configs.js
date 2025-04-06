@@ -9,3 +9,14 @@ export const Configs = {
     coverImages: "coursecoverImages",
   },
 };
+export const Options = [
+  { value: "agriculture", label: "Agriculture" },
+  { value: "technology", label: "Technology" },
+  { value: "business", label: "Business" },
+  { value: "engineering", label: "Engineering" },
+  { value: "fashion & designing", label: "Fashion & Designing" },
+  { value: "hotel management", label: "Hotel Management" },
+  { value: "health", label: "Health" },
+  { value: "diy projects", label: "DIY Projects" },
+  { value: "technical skills", label: "Technical Skills" },
+];

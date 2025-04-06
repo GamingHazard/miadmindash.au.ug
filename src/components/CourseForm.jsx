@@ -3,9 +3,11 @@ import { useDropzone } from "react-dropzone";
 import "w3-css/w3.css";
 import pic from "../assets/no-image.jpg";
 import { AddAPhotoRounded, ArrowBack, Description } from "@mui/icons-material";
-import { Configs } from "./Configs";
+import { Configs, Options } from "./Configs";
 import { AuthContext } from "../context/AuthContext";
 import { CircularProgress } from "@mui/material";
+import Select from "react-select";
+
 import axios from "axios";
 function CourseForm({ closeForm }) {
   const { DecryptData } = useContext(AuthContext);
@@ -22,6 +24,12 @@ function CourseForm({ closeForm }) {
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(false);
   const savedId = localStorage.getItem("adminID");
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const handleChange = (option) => {
+    setSelectedOption(option);
+    console.log("You selected:", option);
+  };
 
   // Handle image selection
   const handleImageChange = (event) => {
@@ -172,18 +180,16 @@ function CourseForm({ closeForm }) {
         videos: uploadedVideos,
         adminId: adminID,
       };
-      console.log(formData);
 
       // 4) send to your backend
       const res = await axios.post(`${Configs.url}/create-course`, formData);
 
-      if (res.status === 201) {
-        alert("Course created successfully!");
+      if (res.status === 200) {
         // reset form
-        setCourseName(" ");
-        setSector(" ");
-        setDuration(" ");
-        setDescription(" ");
+        setCourseName("");
+        setSector("");
+        setDuration("");
+        setDescription("");
         setImage(null);
         setVideos([]);
         setVideoThumbnails([]);
@@ -259,159 +265,162 @@ function CourseForm({ closeForm }) {
         </button>
       </div>
 
-      <div style={{ display: "flex", marginTop: 50 }}>
+      <form>
+        {" "}
+        <div style={{ display: "flex", marginTop: 50 }}>
+          <div
+            style={{
+              width: 300,
+              height: 300,
+              position: "relative",
+              backgroundColor: "white",
+            }}
+          >
+            {image && (
+              <img
+                src={image.preview}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  position: "relative",
+                  borderRadius: 10,
+                }}
+                alt="Course Thumbnail"
+              />
+            )}
+
+            <AddAPhotoRounded
+              onClick={handleButtonClick}
+              className="w3-ripple"
+              style={{
+                color: "grey",
+                position: "absolute",
+                bottom: 10,
+                right: 10,
+                cursor: "pointer",
+                fontSize: 50,
+              }}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              ref={fileInputRef}
+              style={{ display: "none" }}
+            />
+          </div>
+
+          <div style={{ padding: 10, flex: 1 }}>
+            <label>Course Name</label>
+            <br />
+            <input
+              onChange={(e) => {
+                setCourseName(e.target.value);
+              }}
+              style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
+              type="text"
+            />
+
+            <br />
+            <br />
+            <label>Sector</label>
+            <br />
+            <div style={{ width: 400 }}>
+              <Select
+                value={selectedOption}
+                onChange={handleChange}
+                options={Options}
+                placeholder="Select Course Sector..."
+                isClearable
+              />
+            </div>
+            <br />
+            <label>Duration</label>
+            <br />
+            <input
+              onChange={(e) => {
+                setDuration(e.target.value);
+              }}
+              style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
+              type="text"
+            />
+          </div>
+
+          <div className="w3-right">
+            <label>Description</label>
+            <br />
+            <textarea
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+              placeholder="enter text..."
+              style={{
+                height: 260,
+                marginRight: 10,
+                padding: 10,
+                maxHeight: 260,
+                minWidth: 400,
+                maxWidth: 400,
+                minHeight: 260,
+              }}
+              name=""
+              id=""
+            ></textarea>
+          </div>
+        </div>
+        {/* Dropzone Area for Drag & Drop */}
         <div
+          {...getRootProps()}
           style={{
-            width: 300,
-            height: 300,
-            position: "relative",
-            backgroundColor: "white",
+            border: "2px dashed grey",
+            padding: 20,
+            textAlign: "center",
+            cursor: "pointer",
+            marginTop: 20,
           }}
         >
-          {image && (
-            <img
-              src={image.preview}
-              style={{
-                width: "100%",
-                height: "100%",
-                position: "relative",
-                borderRadius: 10,
-              }}
-              alt="Course Thumbnail"
-            />
+          <input {...getInputProps()} />
+          <p>Drag & drop videos here, or click to select</p>
+          <p style={{ fontSize: 12, color: "grey" }}>Max file size: 300MB</p>
+        </div>
+        {/* Show error message if any */}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {/* Video Thumbnails Preview */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            overflowX: "auto",
+            backgroundColor: "whitesmoke",
+            borderRadius: 20,
+            height: 220,
+            marginTop: 10,
+            width: "100%",
+          }}
+        >
+          {videoThumbnails.length > 0 ? (
+            videoThumbnails.map((thumbnail, index) => (
+              <video
+                key={index}
+                src={thumbnail}
+                width="200"
+                height="200"
+                style={{
+                  objectFit: "cover",
+                  borderRadius: 10,
+                  marginLeft: 10,
+                  marginRight: 10,
+                }}
+                controls
+                controlsList="seek"
+              />
+            ))
+          ) : (
+            <p>No videos selected</p>
           )}
-
-          <AddAPhotoRounded
-            onClick={handleButtonClick}
-            className="w3-ripple"
-            style={{
-              color: "grey",
-              position: "absolute",
-              bottom: 10,
-              right: 10,
-              cursor: "pointer",
-              fontSize: 50,
-            }}
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            ref={fileInputRef}
-            style={{ display: "none" }}
-          />
         </div>
-
-        <div style={{ padding: 10, flex: 1 }}>
-          <label>Course Name</label>
-          <br />
-          <input
-            onChange={(e) => {
-              setCourseName(e.target.value);
-            }}
-            style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
-            type="text"
-          />
-
-          <br />
-          <label>Sector</label>
-          <br />
-          <input
-            onChange={(e) => {
-              setSector(e.target.value);
-            }}
-            style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
-            type="text"
-          />
-          <br />
-          <label>Duration</label>
-          <br />
-          <input
-            onChange={(e) => {
-              setDuration(e.target.value);
-            }}
-            style={{ width: 400, paddingLeft: 10, paddingRight: 10 }}
-            type="text"
-          />
-        </div>
-
-        <div className="w3-right">
-          <label>Description</label>
-          <br />
-          <textarea
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-            placeholder="enter text..."
-            style={{
-              height: 260,
-              marginRight: 10,
-              padding: 10,
-              maxHeight: 260,
-              minWidth: 400,
-              maxWidth: 400,
-              minHeight: 260,
-            }}
-            name=""
-            id=""
-          ></textarea>
-        </div>
-      </div>
-
-      {/* Dropzone Area for Drag & Drop */}
-      <div
-        {...getRootProps()}
-        style={{
-          border: "2px dashed grey",
-          padding: 20,
-          textAlign: "center",
-          cursor: "pointer",
-          marginTop: 20,
-        }}
-      >
-        <input {...getInputProps()} />
-        <p>Drag & drop videos here, or click to select</p>
-        <p style={{ fontSize: 12, color: "grey" }}>Max file size: 300MB</p>
-      </div>
-
-      {/* Show error message if any */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {/* Video Thumbnails Preview */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          overflowX: "auto",
-          backgroundColor: "whitesmoke",
-          borderRadius: 20,
-          height: 220,
-          marginTop: 10,
-          width: "100%",
-        }}
-      >
-        {videoThumbnails.length > 0 ? (
-          videoThumbnails.map((thumbnail, index) => (
-            <video
-              key={index}
-              src={thumbnail}
-              width="200"
-              height="200"
-              style={{
-                objectFit: "cover",
-                borderRadius: 10,
-                marginLeft: 10,
-                marginRight: 10,
-              }}
-              controls
-              controlsList="seek"
-            />
-          ))
-        ) : (
-          <p>No videos selected</p>
-        )}
-      </div>
+      </form>
     </div>
   );
 }

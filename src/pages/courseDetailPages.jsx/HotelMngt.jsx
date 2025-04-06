@@ -7,7 +7,7 @@ import { CircularProgress } from "@mui/material";
 import { Refresh } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-function Tech({ back }) {
+function HotelMgt({ back }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loading2, setLoading2] = useState(false);
@@ -23,7 +23,7 @@ function Tech({ back }) {
   }, []); // Ensure 'category' is being passed correctly
   const fetchCourses = async () => {
     try {
-      const category = "technology";
+      const category = "hotel management";
 
       const res = await axios.get(`${Configs.url}/course/${category}`); // Make sure `category` is passed
       console.log("Fetched Courses: ", res.data.courses); // Log the courses
@@ -84,7 +84,7 @@ function Tech({ back }) {
           className="w3-ripple w3-left"
           style={{ color: "white", marginRight: 20, cursor: "pointer" }}
         />
-        <h2 style={{ flex: 1 }}>TECHNOLOGY COURSES</h2>
+        <h2 style={{ flex: 1 }}> HOTEL MANAGEMENT COURSES</h2>
       </div>
 
       {loading && (
@@ -223,4 +223,4 @@ function Tech({ back }) {
   );
 }
 
-export default Tech;
+export default HotelMgt;
