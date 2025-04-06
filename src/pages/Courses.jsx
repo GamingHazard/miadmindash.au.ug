@@ -1,12 +1,14 @@
 // Courses.jsx
 import React, { useState } from "react";
-import img1 from "../assets/img/work-1.jpg";
-import img2 from "../assets/img/work-2.jpg";
-import img3 from "../assets/img/work3.jpg";
-import img4 from "../assets/img/work4.jpg";
-import img5 from "../assets/img/work5.jpg";
-import img6 from "../assets/img/work06.jpg";
-import img7 from "../assets/img/work07.jpg";
+import img1 from "../assets/img/img 1.jpg";
+import img2 from "../assets/img/img 2.jpg";
+import img3 from "../assets/img/img 3.jpg";
+import img4 from "../assets/img/img 4.jpg";
+import img5 from "../assets/img/img 5.jpg";
+import img6 from "../assets/img/img 6.jpg";
+import img7 from "../assets/img/img 7.jpg";
+import img8 from "../assets/img/img 8.jpg";
+import img9 from "../assets/img/img 9.jpg";
 import "w3-css/w3.css";
 
 import "./honeycomb.css"; // Using existing CSS
@@ -78,7 +80,7 @@ function Courses({}) {
             style={{ cursor: "pointer" }}
           >
             <img className="honeycomb-cell_img" src={img5} alt="Work 3" />
-            <div class="honeycomb-cell_title">Medical</div>
+            <div class="honeycomb-cell_title">Health</div>
           </div>
           <div
             onClick={() => handleTabClick(6)}
@@ -103,7 +105,7 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img1} alt="Work 3" />
+            <img className="honeycomb-cell_img" src={img8} alt="Work 3" />
             <div class="honeycomb-cell_title">DIY Projects</div>
           </div>
           <div
@@ -111,7 +113,7 @@ function Courses({}) {
             className="honeycomb-cell w3-card w3-ripple"
             style={{ cursor: "pointer" }}
           >
-            <img className="honeycomb-cell_img" src={img4} alt="Work 3" />
+            <img className="honeycomb-cell_img" src={img9} alt="Work 3" />
             <div class="honeycomb-cell_title">Technical Skills</div>
           </div>
         </div>
