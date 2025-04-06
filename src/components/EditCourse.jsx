@@ -149,13 +149,13 @@ function EditCourse() {
       // 4) build payload
       const adminId = DecryptData(localStorage.getItem("adminID"));
       const payload = {
-        courseName,
-        sector,
-        duration,
+        courseName: courseName,
+        sector: sector,
+        duration: duration,
         description: description.trim(),
         coverImage: cover,
         videos: finalVideos,
-        adminId,
+        adminId: adminId,
       };
 
       // 5) send PATCH
@@ -176,22 +176,53 @@ function EditCourse() {
       {/* Header */}
       <div
         className="w3-panel"
-        style={{ display: "flex", alignItems: "center" }}
+        style={{ display: "flex", alignItems: "center", marginBottom: 20 }}
       >
         <button
           onClick={() => navigate(-1)}
           className="w3-left"
-          style={{ display: "flex", alignItems: "center" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            paddingRight: 10,
+            paddingLeft: 10,
+          }}
         >
           <ArrowBack style={{ marginRight: 4 }} /> Back
         </button>
-        <div style={{ flex: 1 }} />
+        <div
+          style={{
+            flex: 1,
+
+            textAlign: "center",
+          }}
+        >
+          <h2 style={{ fontWeight: "bold" }}>Editing Course</h2>
+        </div>
         <button
           onClick={saveCourse}
           className="w3-right"
           style={{ padding: "0 16px" }}
         >
-          {loading ? <CircularProgress size={16} color="inherit" /> : "Update"}
+          {loading ? (
+            <span
+              style={{
+                display: "flex",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              updating
+              <CircularProgress
+                style={{ marginLeft: 5 }}
+                color="white"
+                size={15}
+              />
+            </span>
+          ) : (
+            "Update"
+          )}
         </button>
       </div>
 
