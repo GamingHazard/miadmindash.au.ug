@@ -3,36 +3,59 @@ import axios from "axios";
 import "w3-css/w3.css";
 import { ArrowBack } from "@mui/icons-material";
 import { Configs } from "../../components/Configs";
+import { CircularProgress } from "@mui/material";
+import { Refresh } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 function Tech({ back }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const editCorse = (course) => {
+    navigate("/editcourse", { state: course });
+  };
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const category = "technology";
-
-        const res = await axios.get(`${Configs.url}/course/${category}`); // Make sure `category` is passed
-        console.log("Fetched Courses: ", res.data.courses); // Log the courses
-
-        if (Array.isArray(res.data.courses)) {
-          setCourses(res.data.courses); // Make sure to set the correct array
-        } else {
-          console.error("Expected an array but got: ", res.data.courses);
-          setError("No courses available.");
-        }
-      } catch (err) {
-        setError("Failed to load courses.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCourses();
   }, []); // Ensure 'category' is being passed correctly
+  const fetchCourses = async () => {
+    try {
+      const category = "technology";
+
+      const res = await axios.get(`${Configs.url}/course/${category}`); // Make sure `category` is passed
+      console.log("Fetched Courses: ", res.data.courses); // Log the courses
+
+      if (Array.isArray(res.data.courses)) {
+        setCourses(res.data.courses); // Make sure to set the correct array
+      } else {
+        console.error("Expected an array but got: ", res.data.courses);
+        setError("No courses available.");
+      }
+    } catch (err) {
+      setError("Failed to load courses. please try again");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to handle delete
+  const deleteCourse = async (courseId) => {
+    try {
+      const res = await axios.delete(
+        `${Configs.url}/delete-course/${courseId}`
+      );
+      if (res.status === 200) {
+        // Remove the deleted course from the UI without needing to re-fetch
+        // setCourses(courses.filter((course) => course._id !== courseId));
+      }
+    } catch (err) {
+      console.error("Error deleting course:", err);
+      setError("Failed to delete course.");
+    }
+  };
 
   return (
     <div
@@ -60,8 +83,25 @@ function Tech({ back }) {
         <h2 style={{ flex: 1 }}>TECHNOLOGY COURSES</h2>
       </div>
 
-      {loading && <p>Loading courses...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {loading && (
+        <p style={{ flex: 1 }}>
+          Loading courses...{" "}
+          <CircularProgress style={{ marginLeft: 5 }} color="white" size={15} />
+        </p>
+      )}
+
+      {error && (
+        <p style={{ color: "red" }}>
+          {error} <br /> <br />
+          <Refresh
+            onClick={fetchCourses}
+            style={{ marginLeft: 5, cursor: "pointer" }}
+            color="white"
+            size={15}
+            className="w3-ripple"
+          />{" "}
+        </p>
+      )}
 
       {!loading && courses.length === 0 && (
         <p style={{ marginTop: 20 }}>No courses available.</p>
@@ -138,11 +178,39 @@ function Tech({ back }) {
               justifyContent: "space-evenly",
             }}
           >
-            <button style={{ margin: 10, paddingLeft: 10, paddingRight: 10 }}>
+            <button
+              onClick={() => {
+                editCorse(course);
+              }}
+              style={{ margin: 10, paddingLeft: 10, paddingRight: 10 }}
+            >
               Edit
             </button>
-            <button style={{ margin: 10, paddingLeft: 10, paddingRight: 10 }}>
-              Delete
+            <button
+              onClick={() => {
+                deleteCourse(course._id);
+              }}
+              style={{ margin: 10, paddingLeft: 10, paddingRight: 10 }}
+            >
+              {loading ? (
+                <span
+                  style={{
+                    display: "flex",
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Deleting...
+                  <CircularProgress
+                    style={{ marginLeft: 5 }}
+                    color="white"
+                    size={15}
+                  />
+                </span>
+              ) : (
+                "Delete"
+              )}
             </button>
           </span>
         </div>
