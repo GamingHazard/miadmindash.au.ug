@@ -15,6 +15,8 @@ import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditCourse() {
   const { DecryptData } = useContext(AuthContext);
@@ -35,6 +37,8 @@ function EditCourse() {
   // === Cover image ===
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
+  const Success = (msg) => toast.success(msg);
+  const Error = (msg) => toast.error(msg);
 
   // === Videos ===
   // existingVideos: objects from backend { url, public_Id }
@@ -48,7 +52,7 @@ function EditCourse() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Build initial thumbnails from existingVideos
+  //   initial thumbnails from existingVideos
   useEffect(() => {
     setVideoThumbnails(existingVideos.map((v) => v.url));
   }, [existingVideos]);
@@ -88,7 +92,7 @@ function EditCourse() {
       reader.onloadend = () => setImage({ file, preview: reader.result });
       reader.readAsDataURL(file);
     } else {
-      setError("Please select a valid image file.");
+      Error("Please select a valid image file.");
     }
   };
   const handleImageClick = () => fileInputRef.current.click();
@@ -167,10 +171,10 @@ function EditCourse() {
       // 5) send PATCH
       await axios.patch(`${Configs.url}/update-course/${course._id}`, payload);
 
+      Success("Course updated successfully 👍");
       navigate(-1);
     } catch (err) {
-      console.error(err);
-      setError(err.message || "Update failed.");
+      Error(err.message || "Update failed.");
     } finally {
       setLoading(false);
     }
@@ -230,6 +234,7 @@ function EditCourse() {
           )}
         </button>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Cover & Form */}
       <div style={{ display: "flex", gap: 20, marginTop: 20 }}>

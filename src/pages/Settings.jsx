@@ -5,6 +5,8 @@ import pic from "../assets/profile.jpg";
 import { Configs } from "../components/Configs";
 import { AuthContext } from "../context/AuthContext";
 import { CircularProgress } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SettingsPage() {
   const { logout, EncryptData, DecryptData } = useContext(AuthContext);
@@ -16,18 +18,23 @@ function SettingsPage() {
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
   const [loading4, setLoading4] = useState(false);
+  const [loading5, setLoading5] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [password, setPassword] = useState("");
   const [deletePassword, setDeletePassword] = useState("");
-  const [recoveryEmail, setRecoveryEmail] = useState(profile.recoveryEmail);
+  const [recoveryEmail, setRecoveryEmail] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [names, setNames] = useState("");
-  const [contact, setContact] = useState(profile.contact);
-  const [email, setEmail] = useState(profile.email);
+  const [contact, setContact] = useState("");
+  const [email, setEmail] = useState("");
 
+  const Success = (msg) => toast.success(msg);
+  const Error = (msg) => toast.error(msg);
+
+  // function to update the admin password
   const updatePassword = async () => {
-    setLoading(true);
+    setLoading5(true);
     const currentPassword = oldPassword;
     const newPassword = password;
 
@@ -41,22 +48,20 @@ function SettingsPage() {
         }
       );
       if (response.status === 200) {
-        setSuccessMsg(true);
-        setSuccessTxt("password changed Successfully ✔ ");
-        setCurrentPassword("");
+        Success("password  changed successfully 👍");
+        setOldPassword("");
         setNewPassword("");
         setPassword("");
       }
     } catch (error) {
-      setErrorMsg(true);
-      setErrorTxt(`Failed to update password.${error.message}`);
-      console.log(error.message);
+      Error(`Failed to update password, try again`);
     } finally {
-      setLoading(false);
+      setLoading5(false);
     }
   };
 
   const updateProfile = async () => {
+    setLoading(true);
     try {
       const adminID = DecryptData(localStorage.getItem("adminID"));
       const data = {
@@ -66,17 +71,19 @@ function SettingsPage() {
         recoveryEmail: recoveryEmail,
         id: adminID,
       };
-      console.log(data);
 
       const response = await axios.patch(`${Configs.url}/update-admin`, data);
       if (response.status === 200) {
+        Success("profile updated successfully");
         const profile = response.data.admin;
 
         let safeData = EncryptData(JSON.stringify(profile));
         localStorage.setItem("profile", safeData);
       }
     } catch (error) {
-      console.log(error.message);
+      Error("failed to update profile,please try again!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,12 +107,10 @@ function SettingsPage() {
 
       const response = await axios.post(`${Configs.url}/recovery-email`, data);
       if (response.status === 200) {
-        // setSuccessMsg(true);
-        // setVerifyFeild(true);
-        console.log("success");
+        Success("code sent to email succesfully");
       }
     } catch (error) {
-      console.log(error.message);
+      Error("failed to send code, please try again");
     } finally {
       setLoading2(false);
     }
@@ -127,13 +132,14 @@ function SettingsPage() {
         data
       );
       if (res.status === 200) {
+        Success("recovery email set successfully ✔");
         setVerificationCode("");
         setRecoveryEmail("");
       }
 
       // Redirect to reset password page
     } catch (error) {
-      console.log(error.message);
+      Error("failed to set recovery email, please try again");
     } finally {
       setLoading3(false);
     }
@@ -145,7 +151,6 @@ function SettingsPage() {
     setLoading4(true);
     try {
       const data = { id: adminID, password: deletePassword };
-      console.log(data);
 
       const response = await axios.delete(
         `${Configs.url}/delete-account`,
@@ -155,13 +160,23 @@ function SettingsPage() {
         logout();
       }
     } catch (error) {
-      console.log(error.message);
+      Error("failed to delete account ❌, please try again later ");
     } finally {
       setLoading4(false);
     }
   };
   return (
-    <div style={{ flex: 1, overflow: "auto", overflowX: "hidden" }}>
+    <div
+      style={{
+        flex: 1,
+        overflow: "auto",
+        overflowX: "hidden",
+        // backgroundColor: "lightgreen",
+        width: 1200,
+      }}
+    >
+      <ToastContainer position="top-right" autoClose={3000} />
+
       {/* SECURITY SECTION */}
       <div>
         <h2 style={{ color: "lightgrey" }}>Security</h2>
@@ -201,11 +216,10 @@ function SettingsPage() {
               type="email"
               placeholder="enter email"
             />
-            <br />
             <button
               disabled={!recoveryEmail || profile.recoveryEmail}
               onClick={getCode}
-              style={{ paddingLeft: 10, paddingRight: 10 }}
+              style={{ paddingLeft: 5, paddingRight: 5 }}
             >
               {loading2 ? (
                 <span
@@ -279,11 +293,13 @@ function SettingsPage() {
               borderRadius: 20,
               marginBottom: 10,
               padding: 10,
-              width: "100%",
+              // width: "100%",
               height: 300,
               textAlign: "center",
               margin: 10,
-              width: 300,
+              width: 310,
+              paddingLeft: 10,
+              paddingRight: 10,
             }}
           >
             <h3>change password</h3>
@@ -335,7 +351,7 @@ function SettingsPage() {
               onClick={updatePassword}
               style={{ paddingLeft: 10, paddingRight: 10 }}
             >
-              {loading ? (
+              {loading5 ? (
                 <span
                   style={{
                     display: "flex",
@@ -461,7 +477,7 @@ function SettingsPage() {
             onChange={(e) => {
               setEmail(e.target.value);
             }}
-            style={{ paddingLeft: 10, paddingRight: 10 }}
+            style={{ paddingLeft: 10, paddingRight: 10, width: 300 }}
             type="email"
           />{" "}
           <br />
@@ -473,7 +489,7 @@ function SettingsPage() {
             onChange={(e) => {
               setRecoveryEmail(e.target.value);
             }}
-            style={{ paddingLeft: 10, paddingRight: 10 }}
+            style={{ paddingLeft: 10, paddingRight: 10, width: 300 }}
             type="email"
           />{" "}
           <br />
@@ -504,17 +520,20 @@ function SettingsPage() {
           </button>
         </div>
       </div>
+
+      {/* TERMS AND CONDITIONS */}
       <span
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          paddingRight: 10,
         }}
       >
         <h2 style={{ color: "lightgrey", flex: 1 }}>Terms & Conditions</h2>
         <button style={{ paddingLeft: 10, paddingRight: 10 }}>Edit</button>
       </span>
-      <div style={{ width: "100%", height: 400 }}>
+      <div style={{ width: "100%", height: 400, paddingRight: 10 }}>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt
         repudiandae minima quos quasi sit omnis ad repellat alias, porro ducimus
         sapiente cupiditate pariatur architecto nisi eos excepturi harum illum

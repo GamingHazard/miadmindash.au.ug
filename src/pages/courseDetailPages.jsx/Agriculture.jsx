@@ -94,19 +94,6 @@ function Agriculture({ back }) {
         </p>
       )}
 
-      {error && (
-        <p style={{ color: "red" }}>
-          {error} <br /> <br />
-          <Refresh
-            onClick={fetchCourses}
-            style={{ marginLeft: 5, cursor: "pointer" }}
-            color="white"
-            size={15}
-            className="w3-ripple"
-          />{" "}
-        </p>
-      )}
-
       {!loading && courses.length === 0 && (
         <p style={{ marginTop: 20 }}>No courses available.</p>
       )}

@@ -7,6 +7,8 @@ import { Configs, Options } from "./Configs";
 import { AuthContext } from "../context/AuthContext";
 import { CircularProgress } from "@mui/material";
 import Select from "react-select";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import axios from "axios";
 function CourseForm({ closeForm }) {
@@ -16,20 +18,22 @@ function CourseForm({ closeForm }) {
   const [videoThumbnails, setVideoThumbnails] = useState([]);
   const [error, setError] = useState("");
   const [image, setImage] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(false);
   const fileInputRef = useRef(null);
   const [courseName, setCourseName] = useState("");
-  const [sector, setSector] = useState("");
+  const [sector, setSector] = useState(null);
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(false);
   const savedId = localStorage.getItem("adminID");
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(false);
 
   const handleChange = (option) => {
-    setSelectedOption(option);
-    console.log("You selected:", option);
+    setSector(option);
   };
+
+  const Success = (msg) => toast.success(msg);
+  const Error = (msg) => toast.error(msg);
 
   // Handle image selection
   const handleImageChange = (event) => {
@@ -115,7 +119,7 @@ function CourseForm({ closeForm }) {
       };
     } catch (err) {
       console.error("Error uploading cover image:", err);
-      throw new Error("Cover image upload failed.");
+      throw new Error("Cover image  failed to upload, try again.");
     }
   };
   // utility to upload videos to Cloudinary
@@ -156,7 +160,6 @@ function CourseForm({ closeForm }) {
 
   const saveCourse = async () => {
     setLoading(true);
-    setError(""); // clear any old errors
 
     try {
       if (!image) throw new Error("Please select a cover image.");
@@ -173,7 +176,7 @@ function CourseForm({ closeForm }) {
       const adminID = DecryptData(savedId);
       const formData = {
         courseName: courseName,
-        sector: sector,
+        sector: sector.value,
         duration: duration,
         description: description.trim(),
         coverImage: imageUrl,
@@ -181,10 +184,13 @@ function CourseForm({ closeForm }) {
         adminId: adminID,
       };
 
+      console.log(formData);
+
       // 4) send to your backend
       const res = await axios.post(`${Configs.url}/create-course`, formData);
 
-      if (res.status === 200) {
+      if (res.status === 201) {
+        Success("Course created successfully 👍");
         // reset form
         setCourseName("");
         setSector("");
@@ -197,8 +203,7 @@ function CourseForm({ closeForm }) {
         throw new Error("Backend returned status " + res.status);
       }
     } catch (err) {
-      console.error("saveCourse error:", err);
-      setError(err.message || "Something went wrong.");
+      Error("failed to create course, please try again.");
     } finally {
       setLoading(false);
     }
@@ -212,6 +217,7 @@ function CourseForm({ closeForm }) {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "left",
+          paddingRight: 16,
         }}
         className="w3-panel"
       >
@@ -241,7 +247,12 @@ function CourseForm({ closeForm }) {
         <button
           className="w3-right"
           onClick={saveCourse}
-          style={{ cursor: "pointer", paddingLeft: 10, paddingRight: 10 }}
+          style={{
+            cursor: "pointer",
+            paddingLeft: 10,
+            paddingRight: 10,
+            marginRight: 30,
+          }}
         >
           {loading ? (
             <span
@@ -264,7 +275,7 @@ function CourseForm({ closeForm }) {
           )}
         </button>
       </div>
-
+      <ToastContainer position="top-right" autoClose={3000} />
       <form>
         {" "}
         <div style={{ display: "flex", marginTop: 50 }}>
@@ -276,9 +287,20 @@ function CourseForm({ closeForm }) {
               backgroundColor: "white",
             }}
           >
-            {image && (
+            {image ? (
               <img
                 src={image.preview}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  position: "relative",
+                  borderRadius: 10,
+                }}
+                alt="Course Thumbnail"
+              />
+            ) : (
+              <img
+                src={pic}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -301,6 +323,7 @@ function CourseForm({ closeForm }) {
                 fontSize: 50,
               }}
             />
+
             <input
               type="file"
               accept="image/*"
@@ -327,7 +350,7 @@ function CourseForm({ closeForm }) {
             <br />
             <div style={{ width: 400 }}>
               <Select
-                value={selectedOption}
+                value={sector}
                 onChange={handleChange}
                 options={Options}
                 placeholder="Select Course Sector..."

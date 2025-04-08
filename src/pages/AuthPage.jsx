@@ -137,9 +137,13 @@ const AuthPage = () => {
         login(token, id, profile);
       }
     } catch (error) {
+      if (error.message === "Request failed with status code 401") {
+        setErro(true);
+        setErroMsg(
+          "wrong Email/contact or password, please check and  try again!"
+        );
+      }
       console.log(error.message);
-      setErro(true);
-      setErroMsg(error.message);
     } finally {
       setLoading(false);
     }
@@ -307,7 +311,7 @@ const AuthPage = () => {
                   style={{ padding: 10, flex: 1, marginRight: 10 }}
                   autoFocus
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder="Enter your email address / recovery eamil"
                 />
                 <button
                   onClick={getCode}
@@ -450,6 +454,8 @@ const AuthPage = () => {
                 />
                 <label>Password</label>
               </div>
+
+              <span style={{ color: "crimson" }}>{Erro ? ErroMsg : ""}</span>
               <button
                 type="submit"
                 onClick={loginAdmin}

@@ -21,6 +21,7 @@
     "react-dropzone": "^14.3.8",
     "react-router-dom": "^7.3.0",
     "react-select": "^5.10.1",
+    "react-toastify": "^11.0.5",
     "w3-css": "^4.1.0"
   },
   "devDependencies": {

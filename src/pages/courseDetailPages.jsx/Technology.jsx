@@ -6,6 +6,8 @@ import { Configs } from "../../components/Configs";
 import { CircularProgress } from "@mui/material";
 import { Refresh } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Tech({ back }) {
   const [courses, setCourses] = useState([]);
@@ -13,7 +15,8 @@ function Tech({ back }) {
   const [loading2, setLoading2] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const Success = (msg) => toast.success(msg);
+  const Error = (msg) => toast.error(msg);
   const editCorse = (course) => {
     navigate("/editcourse", { state: course });
   };
@@ -26,7 +29,6 @@ function Tech({ back }) {
       const category = "technology";
 
       const res = await axios.get(`${Configs.url}/course/${category}`); // Make sure `category` is passed
-      console.log("Fetched Courses: ", res.data.courses); // Log the courses
 
       if (Array.isArray(res.data.courses)) {
         setCourses(res.data.courses); // Make sure to set the correct array
@@ -51,11 +53,11 @@ function Tech({ back }) {
       );
       if (res.status === 200) {
         // Remove the deleted course from the UI without needing to re-fetch
+        Success("Course deleted Successfully ✅");
         setCourses(courses.filter((course) => course._id !== courseId));
       }
     } catch (err) {
-      console.error("Error deleting course:", err);
-      setError("Failed to delete course.");
+      Error("failed to delete course, please try again!");
     } finally {
       setLoading2(false);
     }
@@ -77,6 +79,7 @@ function Tech({ back }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          paddingRight: 20,
         }}
       >
         <ArrowBack
@@ -86,24 +89,12 @@ function Tech({ back }) {
         />
         <h2 style={{ flex: 1 }}>TECHNOLOGY COURSES</h2>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
 
       {loading && (
         <p style={{ flex: 1 }}>
           Loading courses...{" "}
           <CircularProgress style={{ marginLeft: 5 }} color="white" size={15} />
-        </p>
-      )}
-
-      {error && (
-        <p style={{ color: "red" }}>
-          {error} <br /> <br />
-          <Refresh
-            onClick={fetchCourses}
-            style={{ marginLeft: 5, cursor: "pointer" }}
-            color="white"
-            size={15}
-            className="w3-ripple"
-          />{" "}
         </p>
       )}
 

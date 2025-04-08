@@ -42,165 +42,187 @@ function Dashboard() {
         justifyContent: "center",
         alignItems: "center",
         flex: 1,
-        overflow: "auto",
-        overflowY: "hidden",
       }}
     >
       {/* SIDEBAR */}
       <div
-        class=" w3-bar-block w3-margin w3-card w3-third w3-hide-small "
+        class="w3-quarter w3-hide-small "
         style={{
-          width: 250,
-          backgroundColor: "whitesmoke",
-          borderRadius: 20,
-          paddingBottom: 10,
+          // paddingBottom: 10,
           height: 700,
+          paddingLeft: 40,
+          textAlign: "center",
         }}
       >
         <div
+          className="w3-card"
           style={{
-            display: "flex",
-            margin: 20,
-            border: "1px solid lightgrey",
-            borderRadius: 8,
-            padding: 8,
+            borderRadius: 20,
+            backgroundColor: "white",
+            width: 170,
+            paddingTop: 10,
+            marginTop: 10,
           }}
         >
-          <img
-            src={pic}
-            className="w3-circle w3-card"
-            style={{ width: 50, height: 50, marginRight: 10 }}
-            alt=""
-          />
+          {" "}
           <div
             style={{
-              flex: 1,
+              display: "flex",
+              border: "1px solid lightgrey",
+              borderRadius: 8,
+              padding: 5,
+              margin: 10,
+
               justifyContent: "center",
               alignItems: "center",
+            }}
+          >
+            <img
+              onClick={() => handleTabClick(5)}
+              src={pic}
+              className="w3-circle w3-card"
+              style={{
+                width: 30,
+                height: 30,
+                marginRight: 10,
+                cursor: "pointer",
+              }}
+              alt=""
+            />
+            <div
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+              }}
+            >
+              <h4>Hi, Admin</h4>
+            </div>
+          </div>
+          <span
+            style={{
               display: "flex",
             }}
+            onClick={() => handleTabClick(1)}
+            class="w3-bar-item w3-button w3-text-grey"
           >
-            <h4>Hi, Admin</h4>
-          </div>
+            <LibraryBooks
+              size={23}
+              style={{ color: "grey", marginRight: 20 }}
+            />{" "}
+            <span
+              style={{
+                color: activeTab === 1 ? "black" : "grey",
+                fontWeight: activeTab === 1 ? "bold" : "normal",
+              }}
+            >
+              Courses
+            </span>
+          </span>
+          <span
+            style={{
+              display: "flex",
+            }}
+            onClick={() => handleTabClick(2)}
+            class="w3-bar-item w3-button w3-text-grey"
+          >
+            <People size={23} style={{ color: "grey", marginRight: 20 }} />
+            <span
+              style={{
+                color: activeTab === 2 ? "black" : "grey",
+                fontWeight: activeTab === 2 ? "bold" : "normal",
+              }}
+            >
+              Users
+            </span>
+          </span>
+          <span
+            style={{
+              display: "flex",
+            }}
+            onClick={() => handleTabClick(3)}
+            class="w3-bar-item w3-button w3-text-grey"
+          >
+            <ChatBubbleOutline
+              size={23}
+              style={{ color: "grey", marginRight: 20 }}
+            />
+            <span
+              style={{
+                color: activeTab === 3 ? "black" : "grey",
+                fontWeight: activeTab === 3 ? "bold" : "normal",
+              }}
+            >
+              Reports
+            </span>
+          </span>
+          <span
+            style={{
+              display: "flex",
+            }}
+            onClick={() => handleTabClick(4)}
+            class="w3-bar-item w3-button w3-text-grey"
+          >
+            <AnalyticsOutlined
+              size={23}
+              style={{ color: "grey", marginRight: 20 }}
+            />
+            <span
+              style={{
+                color: activeTab === 4 ? "black" : "grey",
+                fontWeight: activeTab === 4 ? "bold" : "normal",
+              }}
+            >
+              Analytics
+            </span>
+          </span>
+          <span
+            style={{
+              display: "flex",
+            }}
+            onClick={() => handleTabClick(5)}
+            class="w3-bar-item w3-button w3-text-grey"
+          >
+            <Settings size={23} style={{ color: "grey", marginRight: 20 }} />
+            <span
+              style={{
+                color: activeTab === 5 ? "black" : "grey",
+                fontWeight: activeTab === 5 ? "bold" : "normal",
+              }}
+            >
+              Settings
+            </span>
+          </span>
+          <span
+            onClick={logout}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 310,
+              borderBottomRightRadius: 20,
+              borderBottomLeftRadius: 20,
+            }}
+            class="w3-bar-item w3-button w3-text-grey"
+          >
+            <LogoutOutlined
+              size={23}
+              style={{ color: "grey", marginRight: 20 }}
+            />
+            Logout
+          </span>
         </div>
-        <span
-          style={{
-            display: "flex",
-          }}
-          onClick={() => handleTabClick(1)}
-          class="w3-bar-item w3-button w3-text-grey"
-        >
-          <LibraryBooks size={23} style={{ color: "grey", marginRight: 20 }} />{" "}
-          <span
-            style={{
-              color: activeTab === 1 ? "black" : "grey",
-              fontWeight: activeTab === 1 ? "bold" : "normal",
-            }}
-          >
-            Courses
-          </span>
-        </span>
-        <span
-          style={{
-            display: "flex",
-          }}
-          onClick={() => handleTabClick(2)}
-          class="w3-bar-item w3-button w3-text-grey"
-        >
-          <People size={23} style={{ color: "grey", marginRight: 20 }} />
-          <span
-            style={{
-              color: activeTab === 2 ? "black" : "grey",
-              fontWeight: activeTab === 2 ? "bold" : "normal",
-            }}
-          >
-            Users
-          </span>
-        </span>
-        <span
-          style={{
-            display: "flex",
-          }}
-          onClick={() => handleTabClick(3)}
-          class="w3-bar-item w3-button w3-text-grey"
-        >
-          <ChatBubbleOutline
-            size={23}
-            style={{ color: "grey", marginRight: 20 }}
-          />
-          <span
-            style={{
-              color: activeTab === 3 ? "black" : "grey",
-              fontWeight: activeTab === 3 ? "bold" : "normal",
-            }}
-          >
-            Reports
-          </span>
-        </span>
-        <span
-          style={{
-            display: "flex",
-          }}
-          onClick={() => handleTabClick(4)}
-          class="w3-bar-item w3-button w3-text-grey"
-        >
-          <AnalyticsOutlined
-            size={23}
-            style={{ color: "grey", marginRight: 20 }}
-          />
-          <span
-            style={{
-              color: activeTab === 4 ? "black" : "grey",
-              fontWeight: activeTab === 4 ? "bold" : "normal",
-            }}
-          >
-            Analytics
-          </span>
-        </span>
-        <span
-          style={{
-            display: "flex",
-          }}
-          onClick={() => handleTabClick(5)}
-          class="w3-bar-item w3-button w3-text-grey"
-        >
-          <Settings size={23} style={{ color: "grey", marginRight: 20 }} />
-          <span
-            style={{
-              color: activeTab === 5 ? "black" : "grey",
-              fontWeight: activeTab === 5 ? "bold" : "normal",
-            }}
-          >
-            Settings
-          </span>
-        </span>
-        <span
-          onClick={logout}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 360,
-            borderBottomRightRadius: 20,
-            borderBottomLeftRadius: 20,
-          }}
-          class="w3-bar-item w3-button w3-text-grey"
-        >
-          <LogoutOutlined
-            size={23}
-            style={{ color: "grey", marginRight: 20 }}
-          />
-          Logout
-        </span>
       </div>
       <div
-        className=" w3-threequarter w3-margin w3-right   "
+        className=" w3-threequarter  w3-right   "
         style={{
           display: "flex",
           height: 700,
           padding: 10,
           position: "relative",
           width: 1200,
+          // backgroundColor: "white",
         }}
       >
         {activeTab === 1 && (
