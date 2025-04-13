@@ -383,6 +383,7 @@ function CourseForm({ closeForm }) {
             <label>Course Name</label>
             <br />
             <input
+              value={courseName}
               disabled={loading}
               onChange={(e) => {
                 setCourseName(e.target.value);
@@ -408,6 +409,7 @@ function CourseForm({ closeForm }) {
             <label>Duration</label>
             <br />
             <input
+              value={duration}
               disabled={loading}
               onChange={(e) => {
                 setDuration(e.target.value);
@@ -422,6 +424,7 @@ function CourseForm({ closeForm }) {
             <br />
 
             <textarea
+              value={description}
               disabled={loading}
               onChange={handleTextChange}
               placeholder="enter text... (255 characters)"
