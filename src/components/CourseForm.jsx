@@ -5,7 +5,7 @@ import pic from "../assets/no-image.jpg";
 import { AddAPhotoRounded, ArrowBack, Description } from "@mui/icons-material";
 import { Configs, Options } from "./Configs";
 import { AuthContext } from "../context/AuthContext";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, LinearProgress } from "@mui/material";
 import Select from "react-select";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,9 +25,14 @@ function CourseForm({ closeForm }) {
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(false);
   const savedId = localStorage.getItem("adminID");
-  const [successMsg, setSuccessMsg] = useState(true);
-  const [errorMsg, setErrorMsg] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState({});
+  const [progress, setProgress] = useState(0);
 
+  const handleTextChange = (e) => {
+    if (e.target.value.length <= 255) {
+      setDescription(e.target.value);
+    }
+  };
   const handleChange = (option) => {
     setSector(option);
   };
@@ -44,8 +49,6 @@ function CourseForm({ closeForm }) {
         setImage({ file, preview: reader.result });
       };
       reader.readAsDataURL(file);
-    } else {
-      setErrorMsg(true);
     }
   };
 
@@ -88,7 +91,7 @@ function CourseForm({ closeForm }) {
   const uploadToCloudinary = async () => {
     if (!image?.file) return null;
 
-    // fetch signature
+    // fetch signature (unchanged)
     let signatureData;
     try {
       const { data } = await axios.get(
@@ -111,7 +114,15 @@ function CourseForm({ closeForm }) {
     try {
       const resp = await axios.post(
         `https://api.cloudinary.com/v1_1/${Configs.cloudName}/image/upload`,
-        formData
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress((prev) => ({ ...prev, cover: percentCompleted }));
+          },
+        }
       );
       return {
         url: resp.data.secure_url,
@@ -119,16 +130,17 @@ function CourseForm({ closeForm }) {
       };
     } catch (err) {
       console.error("Error uploading cover image:", err);
-      throw new Error("Cover image  failed to upload, try again.");
+      throw new Error("Cover image failed to upload, try again.");
     }
   };
+
   // utility to upload videos to Cloudinary
   const uploadVideosToCloudinary = async (videos) => {
     if (videos.length === 0) {
       throw new Error("No videos selected.");
     }
 
-    // map each video to a promise
+    // Map each video to a promise with its own progress tracking
     const uploadPromises = videos.map(async (video, idx) => {
       // get signature for this video
       const { data } = await axios.get(
@@ -145,7 +157,19 @@ function CourseForm({ closeForm }) {
 
       const uploadResp = await axios.post(
         `https://api.cloudinary.com/v1_1/${Configs.cloudName}/video/upload`,
-        formData
+        formData,
+        {
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            // Use a key unique for each video (e.g., video-0, video-1, etc.)
+            setUploadProgress((prev) => ({
+              ...prev,
+              [`video-${idx}`]: percentCompleted,
+            }));
+          },
+        }
       );
 
       return {
@@ -154,7 +178,7 @@ function CourseForm({ closeForm }) {
       };
     });
 
-    // wait for all or throw on first failure
+    // Wait for all uploads to complete
     return Promise.all(uploadPromises);
   };
 
@@ -184,8 +208,6 @@ function CourseForm({ closeForm }) {
         adminId: adminID,
       };
 
-      console.log(formData);
-
       // 4) send to your backend
       const res = await axios.post(`${Configs.url}/create-course`, formData);
 
@@ -208,6 +230,22 @@ function CourseForm({ closeForm }) {
       setLoading(false);
     }
   };
+
+  // Progress Bar
+  const computeOverallProgress = () => {
+    // total number of uploads: cover image + number of videos
+    const totalUploads = 1 + videos.length;
+    // Sum all progress percentages (defaulting to 0 if not set)
+    const coverProgress = uploadProgress.cover || 0;
+    const videoProgress = videos.reduce((acc, _video, idx) => {
+      return acc + (uploadProgress[`video-${idx}`] || 0);
+    }, 0);
+
+    // Calculate overall progress percentage
+    return Math.round((coverProgress + videoProgress) / totalUploads);
+  };
+
+  const overallProgress = computeOverallProgress();
 
   return (
     <div style={{ width: 1200 }}>
@@ -276,8 +314,15 @@ function CourseForm({ closeForm }) {
         </button>
       </div>
       <ToastContainer position="top-right" autoClose={3000} />
+
       <form>
         {" "}
+        {loading && (
+          <div style={{ margin: "20px 0" }}>
+            <LinearProgress variant="determinate" value={overallProgress} />
+            <p>{overallProgress}%</p>
+          </div>
+        )}
         <div style={{ display: "flex", marginTop: 50 }}>
           <div
             style={{
@@ -373,10 +418,9 @@ function CourseForm({ closeForm }) {
             <label>Description</label>
             <br />
             <textarea
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-              placeholder="enter text..."
+              onChange={handleTextChange}
+              placeholder="enter text... (255 characters)"
+              maxLength={255}
               style={{
                 height: 260,
                 marginRight: 10,

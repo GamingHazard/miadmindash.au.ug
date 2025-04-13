@@ -79,7 +79,6 @@ function Tech({ back }) {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          paddingRight: 20,
         }}
       >
         <ArrowBack

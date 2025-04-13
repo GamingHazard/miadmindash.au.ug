@@ -223,6 +223,7 @@ function Dashboard() {
           position: "relative",
           width: 1200,
           // backgroundColor: "white",
+          paddingRight: 10,
         }}
       >
         {activeTab === 1 && (
