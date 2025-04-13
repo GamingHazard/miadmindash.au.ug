@@ -319,16 +319,18 @@ function EditCourse() {
 
         {/* Form Fields */}
         <div style={{ flex: 1 }}>
-          <label>Course Name</label>
+          <label style={{ fontWeight: "bold" }}>Course Name</label>
           <input
+            disabled={loading}
             value={courseName}
             onChange={(e) => setCourseName(e.target.value)}
             className="w3-input"
           />
 
-          <label>Sector</label>
+          <label style={{ fontWeight: "bold" }}>Sector</label>
           <div style={{ width: 400 }}>
             <Select
+              disable={loading}
               value={sector}
               onChange={setSector}
               options={Options}
@@ -336,19 +338,21 @@ function EditCourse() {
               isClearable
             />
           </div>
-          <label>Duration</label>
+          <label style={{ fontWeight: "bold" }}>Duration</label>
           <input
+            disabled={loading}
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
             className="w3-input"
           />
 
-          <label>Description</label>
+          <label style={{ fontWeight: "bold" }}>Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w3-input"
             style={{ height: 120 }}
+            disabled={loading}
           />
         </div>
       </div>
@@ -364,7 +368,7 @@ function EditCourse() {
           cursor: "pointer",
         }}
       >
-        <input {...getInputProps()} />
+        <input disabled={loading} {...getInputProps()} />
         <p>Drag & drop videos here, or click to select</p>
         <small>Max size: 300MB each</small>
       </div>

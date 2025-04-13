@@ -255,7 +255,7 @@ function CourseForm({ closeForm }) {
           justifyContent: "center",
           alignItems: "center",
           textAlign: "left",
-          paddingRight: 16,
+          paddingRight: 20,
         }}
         className="w3-panel"
       >
@@ -320,7 +320,7 @@ function CourseForm({ closeForm }) {
         {loading && (
           <div style={{ margin: "20px 0" }}>
             <LinearProgress variant="determinate" value={overallProgress} />
-            <p>{overallProgress}%</p>
+            <p>{overallProgress}% Completed</p>
           </div>
         )}
         <div style={{ display: "flex", marginTop: 50 }}>
@@ -370,6 +370,7 @@ function CourseForm({ closeForm }) {
             />
 
             <input
+              disabled={loading}
               type="file"
               accept="image/*"
               onChange={handleImageChange}
@@ -382,6 +383,7 @@ function CourseForm({ closeForm }) {
             <label>Course Name</label>
             <br />
             <input
+              disabled={loading}
               onChange={(e) => {
                 setCourseName(e.target.value);
               }}
@@ -406,6 +408,7 @@ function CourseForm({ closeForm }) {
             <label>Duration</label>
             <br />
             <input
+              disabled={loading}
               onChange={(e) => {
                 setDuration(e.target.value);
               }}
@@ -417,13 +420,15 @@ function CourseForm({ closeForm }) {
           <div className="w3-right">
             <label>Description</label>
             <br />
+
             <textarea
+              disabled={loading}
               onChange={handleTextChange}
               placeholder="enter text... (255 characters)"
               maxLength={255}
               style={{
                 height: 260,
-                marginRight: 10,
+                marginRight: 40,
                 padding: 10,
                 maxHeight: 260,
                 minWidth: 400,
@@ -446,7 +451,7 @@ function CourseForm({ closeForm }) {
             marginTop: 20,
           }}
         >
-          <input {...getInputProps()} />
+          <input disabled={loading} {...getInputProps()} />
           <p>Drag & drop videos here, or click to select</p>
           <p style={{ fontSize: 12, color: "grey" }}>Max file size: 300MB</p>
         </div>
