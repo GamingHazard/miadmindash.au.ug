@@ -26,6 +26,7 @@ As the demand for online education continues to rise, so does the need for effec
 
 Description:
 Admins can create new courses by providing a title, description, syllabus, multimedia content, and duration. The edit feature allows for real-time updates to course content and metadata. Courses that are outdated or no longer needed can easily be deleted.
+![Screenshot 2025-04-24 at 08-35-37 micoursespanel au ug](https://github.com/user-attachments/assets/6fc913a5-6cc9-499a-9c37-1e21839dcb8c)
 
 Upload Spot:
 🖼️ Upload a screenshot of the “Create Course” form here.
