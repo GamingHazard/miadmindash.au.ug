@@ -29,7 +29,7 @@ Description:
 Admins can create new courses by providing a title, description, syllabus, multimedia content, and duration. The edit feature allows for real-time updates to course content and metadata. Courses that are outdated or no longer needed can easily be deleted.
 
 Upload Spot:
-Course Creation Page:![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-37%20micoursespanel.au.ug.png)
+Course Creation Page:![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/a0acf555bce7f6b1c85f7b42e9dc52402721ada8/src/assets/shots/Screenshot%202025-04-24%20at%2008-36-17%20micoursespanel.au.ug.png)
 
 Course Editing Page: ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-57%20micoursespanel.au.ug.png)
 Created Courses page:![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-37%20micoursespanel.au.ug.png)
