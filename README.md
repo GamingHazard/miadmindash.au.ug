@@ -29,9 +29,10 @@ Description:
 Admins can create new courses by providing a title, description, syllabus, multimedia content, and duration. The edit feature allows for real-time updates to course content and metadata. Courses that are outdated or no longer needed can easily be deleted.
 
 Upload Spot:
-Course Creation Page: https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-37%20micoursespanel.au.ug.png
-Course Editing Page: https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-57%20micoursespanel.au.ug.png
-Created Courses page: https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-37%20micoursespanel.au.ug.png
+Course Creation Page:![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-37%20micoursespanel.au.ug.png)
+
+Course Editing Page: ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-57%20micoursespanel.au.ug.png)
+Created Courses page:![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-35-37%20micoursespanel.au.ug.png)
 
 2.  👥 User Subscription Tracking
 
@@ -39,24 +40,26 @@ Description:
 Track how many users have subscribed to each course. The dashboard presents visual stats and metrics, including charts and growth trends, to help monitor user engagement.
 
 Upload Spot:
-Page for displaying all users in the app: https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-36-47%20micoursespanel.au.ug.png
+Page for displaying all users in the app: ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-36-47%20micoursespanel.au.ug.png)
 
-Analysis Page: https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-12%20micoursespanel.au.ug.png
+Analysis Page:![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-12%20micoursespanel.au.ug.png)
 
 3. 📩 User Complaints Handling and Replies
 
 Description:
 The dashboard includes a complaint management module that collects user issues or feedback. Admins can view, categorize, and respond to complaints directly from the interface, with options to mark them as resolved.
 
-Upload Spot: https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-03%20micoursespanel.au.ug.png
+Upload Spot:![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-03%20micoursespanel.au.ug.png)
 
 4. 🙋‍♂️ Admin Profile Management
 
 Description:
 Admins can create or update their personal profile including name, profile picture, contact details, and bio. This section also allows password updates and role-based access configurations.
 
-Upload Spot: https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-30%20micoursespanel.au.ug.png
-https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-40%20micoursespanel.au.ug.png
+Upload Spot:
+
+Password changing and account deleteing forms- ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-30%20micoursespanel.au.ug.png)
+Profile editing form - ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-40%20micoursespanel.au.ug.png)
 
 5. 🔐 Authentication: Login and Logout
 
@@ -64,8 +67,8 @@ Description:
 Secure login and logout functionalities are provided with password encryption, session tracking, and optional multi-factor authentication. This ensures that only authorized users have access to the admin dashboard.
 
 Upload Spot:
-logib Page- https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-15%20micoursespanel.au.ug.png
-Registration Page- https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-29%20micoursespanel.au.ug.png
+logib Page- ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-15%20micoursespanel.au.ug.png)
+Registration Page- ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-29%20micoursespanel.au.ug.png)
 
 📸 Tips for Uploading Pictures
 
