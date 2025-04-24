@@ -58,8 +58,8 @@ Admins can create or update their personal profile including name, profile pictu
 
 Upload Spot:
 
-Password changing and account deleteing forms- ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-30%20micoursespanel.au.ug.png)
-Profile editing form - ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-40%20micoursespanel.au.ug.png)
+Password changing and account deleteing forms: ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-30%20micoursespanel.au.ug.png)
+Profile editing form: ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-37-40%20micoursespanel.au.ug.png)
 
 5. 🔐 Authentication: Login and Logout
 
@@ -67,8 +67,9 @@ Description:
 Secure login and logout functionalities are provided with password encryption, session tracking, and optional multi-factor authentication. This ensures that only authorized users have access to the admin dashboard.
 
 Upload Spot:
-logib Page- ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-15%20micoursespanel.au.ug.png)
-Registration Page- ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-29%20micoursespanel.au.ug.png)
+
+login Page: ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-15%20micoursespanel.au.ug.png)
+Registration Page: ![Alt text](https://github.com/GamingHazard/miadmindash.au.ug/blob/main/src/assets/shots/Screenshot%202025-04-24%20at%2008-32-29%20micoursespanel.au.ug.png)
 
 📸 Tips for Uploading Pictures
 
